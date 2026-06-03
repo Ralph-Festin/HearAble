@@ -1,14 +1,16 @@
-/* ==========================================================================
-   views.js - Static HTML Templates
-   ========================================================================== */
+/* views.js
+   This object acts as our dictionary of HTML templates. 
+   Instead of writing HTML directly in index.html, we store it here as text strings.
+   This keeps our main HTML file clean and allows JavaScript to instantly swap "pages".
+*/
 
 const ViewTemplates = {
+    // The dashboard welcome screen
     home: `
         <header class="hero">
             <h1>Welcome Back!</h1>
             <p>Discover new opportunities and track your applications</p>
         </header>
-
         <section class="card announcements">
             <div class="section-header">
                 <span class="icon-blue">📢</span>
@@ -19,16 +21,10 @@ const ViewTemplates = {
             </div>
             <div class="inner-card">
                 <h4>New Job Postings Available</h4>
-                <p>We have added 5 new job postings from our partner companies. Check them out on the job board!</p>
+                <p>We have added new job postings from our partner companies. Check them out on the job board!</p>
                 <span class="timestamp">🕒 Posted Mar 11, 2026</span>
             </div>
-            <div class="inner-card">
-                <h4>Monthly Networking Event</h4>
-                <p>Join us for our monthly networking event on March 20th at 6 PM. This is a great opportunity to meet with partner companies and fellow graduates.</p>
-                <span class="timestamp">🕒 Posted Mar 8, 2026</span>
-            </div>
         </section>
-
         <div class="stats-row">
             <div class="stat-card">
                 <span class="stat-label">Active Applications</span>
@@ -39,7 +35,6 @@ const ViewTemplates = {
                 <span class="stat-number">6</span>
             </div>
         </div>
-
         <section class="card">
             <div class="card-header-flex">
                 <div>
@@ -50,7 +45,6 @@ const ViewTemplates = {
             </div>
             <div id="recent-jobs-container"></div>
         </section>
-
         <section class="card">
             <div class="card-header-flex mb-20">
                 <div class="flex-start-gap">
@@ -66,6 +60,7 @@ const ViewTemplates = {
         </section>
     `,
 
+    // The main job search and listing page
     jobs: `
         <header class="hero">
             <div class="flex-between-center">
@@ -76,7 +71,6 @@ const ViewTemplates = {
                 <button id="add-job-btn" class="btn-black">+ Add New Job</button>
             </div>
         </header>
-
         <div class="filter-panel">
             <div class="search-box-wrapper">
                 <span class="search-icon">🔍</span>
@@ -89,23 +83,21 @@ const ViewTemplates = {
                 <option>All Types</option>
             </select>
         </div>
-
         <div class="results-counter" id="results-counter">Showing 0 jobs</div>
-
         <div id="job-postings-container"></div>
 
         <div id="add-job-modal" class="modal">
             <div class="modal-content card">
                 <h3>Create New Job Posting</h3>
                 <form id="add-job-form">
-                    <input type="text" id="job-title" placeholder="Job Title (e.g., Frontend Developer)" required>
+                    <input type="text" id="job-title" placeholder="Job Title" required>
                     <input type="text" id="job-location" placeholder="Location" required>
                     <select id="job-type">
                         <option value="Full-time">Full-time</option>
                         <option value="Part-time">Part-time</option>
                         <option value="Contract">Contract</option>
                     </select>
-                    <input type="text" id="job-requirements" placeholder="Requirements (comma separated, e.g., React, UI/UX, Figma)" required>
+                    <input type="text" id="job-requirements" placeholder="Requirements (comma separated)" required>
                     <textarea id="job-desc" placeholder="Job Description" rows="4" required></textarea>
                     <div class="btn-group">
                         <button type="submit" class="btn-black flex-1">Post Job</button>
@@ -116,6 +108,7 @@ const ViewTemplates = {
         </div>
     `,
 
+    // Directory for tracking graduates
     graduates: `
         <header class="hero">
             <h1>Graduates Directory</h1>
@@ -136,6 +129,7 @@ const ViewTemplates = {
         </section>
     `,
 
+    // Directory for tracking companies
     companies: `
         <header class="hero">
             <h1>Partner Companies</h1>
@@ -159,11 +153,13 @@ const ViewTemplates = {
         </section>
     `,
 
+    // The individual job view screen
     jobDetails: `
         <button class="back-btn" id="back-to-jobs">← Back to Jobs</button>
         <div class="card" id="job-details-content"></div>
     `,
 
+    // Profile settings and role switching
     account: `
         <header class="hero">
             <h1>Account Settings</h1>
@@ -194,7 +190,6 @@ const ViewTemplates = {
                     <span class="icon">📝</span> Edit Profile
                 </button>
             </div>
-
             <div class="card">
                 <div class="mb-16">
                     <h3>Personal Information</h3>

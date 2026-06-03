@@ -1,7 +1,9 @@
-/* ==========================================================================
-   data.js - Global State & Databases
-   ========================================================================== */
+/* data.js
+   Our mock database. This holds the state of the application. 
+   When backend integration happens, these arrays will be populated by fetching from an API.
+*/
 
+// Constant simulating the active company session
 const CURRENT_LOGGED_IN_COMPANY = "Tech Solutions Inc."; 
 
 let jobsData = [
@@ -66,6 +68,7 @@ let companiesData = [
     { id: 303, name: "Creative Studios", location: "Makati, Philippines", jobsPosted: 0, status: "Pending" }
 ];
 
+// Profile data for the currently logged in user
 let userProfileData = {
     fullName: "John Graduate",
     email: "graduate@test.com",
