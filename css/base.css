@@ -1,0 +1,42 @@
+/* ==========================================================================
+   base.css - Variables, Resets, and Typography
+   ========================================================================== */
+:root {
+    --primary-color: #0f172a;
+    --secondary-text: #64748b;
+    --background-color: #f8fafc;
+    --surface-color: #ffffff;
+    --border-color: #e2e8f0;
+    
+    --blue-accent: #3b82f6;
+    --blue-bg: #eff6ff;
+    
+    --success-color: #10b981;
+    --success-bg: #ecfdf5;
+    
+    --warning-color: #f59e0b;
+    --warning-bg: #fffbeb;
+    
+    --font-family: 'Inter', sans-serif;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    line-height: 1.5;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
