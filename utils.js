@@ -32,3 +32,4 @@ function generateSkillPillsHTML(skills, maxDisplay = 3) {
     html += `</div>`;
     return html;
 }
+

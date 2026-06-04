@@ -1,66 +1,48 @@
-/* views.js
-   This object acts as our dictionary of HTML templates. 
-   Instead of writing HTML directly in index.html, we store it here as text strings.
-   This keeps our main HTML file clean and allows JavaScript to instantly swap "pages".
-*/
+/* ==========================================================================
+   views.js - Static HTML Templates
+   ========================================================================== */
 
 const ViewTemplates = {
-    // The dashboard welcome screen
     home: `
         <header class="hero">
             <h1>Welcome Back!</h1>
             <p>Discover new opportunities and track your applications</p>
         </header>
-        <section class="card announcements">
-            <div class="section-header">
-                <span class="icon-blue">📢</span>
-                <div>
-                    <h3>Announcements</h3>
-                    <p class="subtext">Stay updated with the latest news and updates from SDEAS</p>
-                </div>
-            </div>
-            <div class="inner-card">
-                <h4>New Job Postings Available</h4>
-                <p>We have added new job postings from our partner companies. Check them out on the job board!</p>
-                <span class="timestamp">🕒 Posted Mar 11, 2026</span>
-            </div>
-        </section>
-        <div class="stats-row">
-            <div class="stat-card">
-                <span class="stat-label">Active Applications</span>
-                <span class="stat-number">7</span>
-            </div>
-            <div class="stat-card">
-                <span class="stat-label">Available Jobs</span>
-                <span class="stat-number">6</span>
+
+        <div class="dashboard-grid">
+            <aside class="dashboard-sidebar">
+                <div id="home-profile-container"></div>
+            </aside>
+
+            <div class="dashboard-main">
+                <section class="card">
+                    <div class="card-header-flex">
+                        <div>
+                            <h3 id="home-jobs-title">Recent Job Postings</h3>
+                            <p class="subtext" id="home-jobs-subtitle">Latest opportunities from partner companies</p>
+                        </div>
+                        <button class="btn-black" id="view-all-jobs-btn">View All</button>
+                    </div>
+                    <div id="recent-jobs-container"></div>
+                </section>
+
+                <section class="card">
+                    <div class="card-header-flex mb-20">
+                        <div class="flex-start-gap">
+                            <span id="app-section-icon" class="icon-blue">👤</span>
+                            <div>
+                                <h3 id="app-section-title">My Applications</h3>
+                                <p class="subtext" id="app-section-subtitle">Track your job application status</p>
+                            </div>
+                        </div>
+                        <button class="btn-outline btn-sm" id="view-all-apps-btn">View All →</button>
+                    </div>
+                    <div id="applications-container"></div>
+                </section>
             </div>
         </div>
-        <section class="card">
-            <div class="card-header-flex">
-                <div>
-                    <h3 id="home-jobs-title">Recent Job Postings</h3>
-                    <p class="subtext" id="home-jobs-subtitle">Latest opportunities from partner companies</p>
-                </div>
-                <button class="btn-black" id="view-all-jobs-btn">View All</button>
-            </div>
-            <div id="recent-jobs-container"></div>
-        </section>
-        <section class="card">
-            <div class="card-header-flex mb-20">
-                <div class="flex-start-gap">
-                    <span id="app-section-icon" class="icon-blue">👤</span>
-                    <div>
-                        <h3 id="app-section-title">My Applications</h3>
-                        <p class="subtext" id="app-section-subtitle">Track your job application status</p>
-                    </div>
-                </div>
-                <button class="btn-outline btn-sm" id="view-all-apps-btn">View All →</button>
-            </div>
-            <div id="applications-container"></div>
-        </section>
     `,
 
-    // The main job search and listing page
     jobs: `
         <header class="hero">
             <div class="flex-between-center">
@@ -71,6 +53,7 @@ const ViewTemplates = {
                 <button id="add-job-btn" class="btn-black">+ Add New Job</button>
             </div>
         </header>
+
         <div class="filter-panel">
             <div class="search-box-wrapper">
                 <span class="search-icon">🔍</span>
@@ -83,6 +66,7 @@ const ViewTemplates = {
                 <option>All Types</option>
             </select>
         </div>
+
         <div class="results-counter" id="results-counter">Showing 0 jobs</div>
         <div id="job-postings-container"></div>
 
@@ -90,7 +74,7 @@ const ViewTemplates = {
             <div class="modal-content card">
                 <h3>Create New Job Posting</h3>
                 <form id="add-job-form">
-                    <input type="text" id="job-title" placeholder="Job Title" required>
+                    <input type="text" id="job-title" placeholder="Job Title (e.g., Frontend Developer)" required>
                     <input type="text" id="job-location" placeholder="Location" required>
                     <select id="job-type">
                         <option value="Full-time">Full-time</option>
@@ -108,7 +92,6 @@ const ViewTemplates = {
         </div>
     `,
 
-    // Directory for tracking graduates
     graduates: `
         <header class="hero">
             <h1>Graduates Directory</h1>
@@ -129,7 +112,6 @@ const ViewTemplates = {
         </section>
     `,
 
-    // Directory for tracking companies
     companies: `
         <header class="hero">
             <h1>Partner Companies</h1>
@@ -153,37 +135,22 @@ const ViewTemplates = {
         </section>
     `,
 
-    // The individual job view screen
     jobDetails: `
         <button class="back-btn" id="back-to-jobs">← Back to Jobs</button>
         <div class="card" id="job-details-content"></div>
     `,
 
-    // Profile settings and role switching
-    account: `
+    // NEW: Just the profile section
+    profile: `
         <header class="hero">
-            <h1>Account Settings</h1>
-            <p>Manage your profile info and preferences</p>
+            <h1>My Profile</h1>
+            <p>Manage your account details and view your specific settings</p>
         </header>
-
-        <div class="card role-switcher-card">
-            <div class="section-header mb-16">
-                <div>
-                    <h3>Preview Dashboard As:</h3>
-                    <p class="subtext">Switch roles to see different account features</p>
-                </div>
-            </div>
-            <div class="toggle-group">
-                <button class="role-btn active" data-role="user">Applicant (User)</button>
-                <button class="role-btn" data-role="company">Company Partner</button>
-                <button class="role-btn" data-role="admin">System Admin</button>
-            </div>
-        </div>
 
         <div id="role-content-user" class="role-content active">
             <div class="card-header-flex mb-20">
                 <div>
-                    <h2 class="details-title">My Profile</h2>
+                    <h2 class="details-title">Applicant Profile</h2>
                     <p class="subtext">Manage your personal information</p>
                 </div>
                 <button class="btn-black" id="edit-profile-btn">
@@ -228,5 +195,65 @@ const ViewTemplates = {
                 <button class="btn-outline mt-16">View System Logs</button>
             </div>
         </div>
+    `,
+
+    // NEW: Just the Account Switcher section
+    switchAccount: `
+        <header class="hero">
+            <h1>Change Account</h1>
+            <p>Switch roles to preview different dashboard features</p>
+        </header>
+
+        <div class="card role-switcher-card">
+            <div class="section-header mb-16">
+                <div>
+                    <h3>Preview Dashboard As:</h3>
+                    <p class="subtext">Select a role below</p>
+                </div>
+            </div>
+            <div class="toggle-group">
+                <button class="role-btn" data-role="user">Applicant (User)</button>
+                <button class="role-btn" data-role="company">Company Partner</button>
+                <button class="role-btn active" data-role="admin">System Admin</button>
+            </div>
+        </div>
+    `,
+
+    notifications: `
+        <header class="hero">
+            <div class="flex-between-center">
+                <div>
+                    <h1>Notifications</h1>
+                    <p>Important updates regarding your applications and account</p>
+                </div>
+                <button class="btn-outline">Mark All as Read</button>
+            </div>
+        </header>
+
+        <section class="card">
+            <div>
+                <div class="list-item">
+                    <div class="item-content">
+                        <h4 style="display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--blue-accent); font-size: 0.8rem;">●</span> 
+                            Application Update
+                        </h4>
+                        <p class="description" style="margin-bottom: 4px;">Your application for <strong>Frontend Developer</strong> is now under review by Tech Solutions Inc.</p>
+                        <span class="timestamp">2 hours ago</span>
+                    </div>
+                </div>
+
+                <div class="list-item">
+                    <div class="item-content">
+                        <h4 style="display: flex; align-items: center; gap: 8px;">
+                            <span style="color: var(--warning-color); font-size: 0.8rem;">●</span> 
+                            Profile Reminder
+                        </h4>
+                        <p class="description" style="margin-bottom: 4px;">Your profile is 80% complete. Add a portfolio link to stand out to employers.</p>
+                        <span class="timestamp">1 day ago</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     `
 };

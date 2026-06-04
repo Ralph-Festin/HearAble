@@ -16,6 +16,7 @@
             <div class="logo-box">H</div>
             <span class="brand-name">HearAble</span>
         </div>
+        
         <div class="nav-center">
             <button class="nav-link active" data-target="home-view">
                 <span class="icon">🏠</span> Home
@@ -31,33 +32,52 @@
                 <span class="icon">🏢</span> Companies
             </button>
 
-            <button class="nav-link" data-target="account-view">
-                <span class="icon">👤</span> Account
+            <button class="nav-link" data-target="notifications-view" style="margin-left: 8px;">
+                <div style="position: relative; display: flex;">
+                    <span class="icon">🔔</span>
+                    <span class="badge" style="top: -6px; right: -8px;">2</span> 
+                </div>
+                Notifications
             </button>
-        </div>
-        <div class="nav-right">
-            <div class="notification-wrapper">
-                <span class="bell-icon">🔔</span>
-                <span class="badge">2</span>
+            
+            <div class="profile-dropdown-wrapper" style="display: flex; align-items: center; margin-left: 12px;">
+                <div class="user-avatar" id="profile-dropdown-trigger">JG</div>
+                
+                <div class="dropdown-menu" id="profile-dropdown-menu">
+                    <button class="dropdown-item" data-action="view-profile">
+                        <span class="icon">👤</span> My Profile
+                    </button>
+                    <button class="dropdown-item" data-action="switch-account">
+                        <span class="icon">🔄</span> Change Account
+                    </button>
+                    <div class="dropdown-divider"></div>
+                    <button class="dropdown-item text-danger" data-action="sign-out">
+                        <span class="icon">🚪</span> Sign Out
+                    </button>
+                </div>
             </div>
-            <div class="user-avatar">JG</div>
         </div>
+        
+        <div class="nav-right"></div>
     </nav>
 
     <main class="container">
-        
         <div id="home-view" class="view-section active"></div>
         <div id="jobs-view" class="view-section"></div>
         <div id="graduates-view" class="view-section"></div>
         <div id="companies-view" class="view-section"></div>
         <div id="job-details-view" class="view-section"></div>
-        <div id="account-view" class="view-section"></div>
-
+        
+        <div id="profile-view" class="view-section"></div>
+        <div id="switch-account-view" class="view-section"></div>
+        
+        <div id="notifications-view" class="view-section"></div>
     </main>
 
     <script src="utils.js"></script>
     <script src="data.js"></script>
-    <script src="views.js"></script> <script src="rendering.js"></script>
+    <script src="views.js"></script> 
+    <script src="rendering.js"></script>
     <script src="navigation.js"></script>
     <script src="modals.js"></script>
     <script src="user.js"></script>

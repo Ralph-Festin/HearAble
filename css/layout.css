@@ -1,6 +1,8 @@
 /* ==========================================================================
-   layout.css - Navigation, Containers, and Views
+   layout.css - Navigation, Containers, Grids, and Major Page Structures
    ========================================================================== */
+
+/* The top navigation bar that stays glued to the top of the screen */
 .navbar {
     display: flex;
     justify-content: space-between;
@@ -13,6 +15,7 @@
     z-index: 100;
 }
 
+/* Groups the logo and the brand name together */
 .nav-left {
     display: flex;
     align-items: center;
@@ -24,32 +27,40 @@
     font-weight: 600;
 }
 
+/* Holds the main center links */
 .nav-center {
     display: flex;
     gap: 24px;
 }
 
+/* Groups the notification bell and user profile circle */
 .nav-right {
     display: flex;
     align-items: center;
     gap: 20px;
 }
 
+/* The master container that holds all the page content. 
+   It prevents the website from stretching too wide on massive desktop monitors.
+*/
 .container {
     max-width: 1100px;
     margin: 0 auto;
     padding: 32px 20px;
 }
 
+/* The wrapper for our Javascript SPA pages. Hidden by default. */
 .view-section {
     display: none;
     animation: fadeIn 0.3s ease-in-out;
 }
 
+/* The Javascript adds this class to make the selected page visible */
 .view-section.active {
     display: block;
 }
 
+/* The large welcome headers at the top of every page */
 .hero {
     margin-bottom: 32px;
 }
@@ -58,40 +69,59 @@
     font-size: 2rem;
     font-weight: 600;
     margin-bottom: 8px;
+    letter-spacing: -0.02em;
 }
 
 .hero p {
     color: var(--secondary-text);
+    font-size: 1.1rem;
 }
 
+/* Groups elements nicely with a space between them */
+.flex-between-center {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Pushes items to the left but keeps a gap between them */
+.flex-start-gap {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+}
+
+/* The statistics boxes that sit side-by-side */
 .stats-row {
     display: flex;
     gap: 24px;
     margin-bottom: 24px;
 }
 
-/* --- Mobile Layout Adjustments --- */
+/* The new two-column layout for the Home Dashboard */
+.dashboard-grid {
+    display: grid;
+    /* Forces the left column to be exactly 280px, and the right side takes up the rest */
+    grid-template-columns: 280px 1fr; 
+    gap: 24px;
+    align-items: start;
+}
+
+/* Mobile responsive rules specifically for the layout */
 @media (max-width: 768px) {
-    .navbar {
-        flex-direction: column;
-        padding: 16px;
-        gap: 16px;
-    }
-    
-    .nav-center {
-        flex-wrap: wrap;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .nav-right {
-        width: 100%;
-        justify-content: space-between;
-        border-top: 1px solid var(--border-color);
-        padding-top: 16px;
-    }
-
+    /* Stack the stats boxes on top of each other */
     .stats-row {
         flex-direction: column;
+    }
+    
+    /* Shrink the layout padding for small phone screens */
+    .container {
+        padding: 20px 16px;
+    }
+
+    /* Stack the new dashboard grid into a single scrolling column */
+    .dashboard-grid {
+        grid-template-columns: 1fr;
     }
 }

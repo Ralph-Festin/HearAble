@@ -1,9 +1,10 @@
-/* rendering.js
-   This file acts as our visual factory. Its only job is to receive arrays of data 
-   and loop through them, churning out HTML cards that get injected into the DOM.
-*/
+/* ==========================================================================
+   rendering.js - UI Generation Logic
+   ========================================================================== */
 
-// Draws the main list of jobs on the Job Postings page
+/* Draws the main list of jobs on the Job Postings page. 
+   It expects an array of job objects and builds an HTML card for each one.
+*/
 function renderJobs(jobsArray) {
     const container = document.getElementById('job-postings-container');
     const counter = document.getElementById('results-counter');
@@ -11,15 +12,15 @@ function renderJobs(jobsArray) {
     // Safety check in case the element doesn't exist
     if (!container) return;
     
-    // Clear out any old jobs before drawing new ones
+    // Clear out any old jobs before drawing new ones to prevent duplicates
     container.innerHTML = '';
     
-    // Update the counter text
+    // Update the text that shows how many jobs were found
     if (counter) {
         counter.textContent = `Showing ${jobsArray.length} job${jobsArray.length !== 1 ? 's' : ''}`;
     }
 
-    // Loop through the data and build a card for each item
+    // Loop through the array and build a card for each item
     jobsArray.forEach(job => {
         // Uses a utility function to turn an array of skills into nice visual badges
         const skillsHTML = generateSkillPillsHTML(job.skills, 3);
@@ -41,6 +42,7 @@ function renderJobs(jobsArray) {
             <p class="description">${job.description}</p>
             ${skillsHTML}
             <div class="job-board-footer">
+                <!-- We store the job ID directly in the button so we know what was clicked later -->
                 <button class="btn-black view-details-btn" data-id="${job.id}">View Details</button>
             </div>
         `;
@@ -52,10 +54,12 @@ function renderJobs(jobsArray) {
     attachDetailsListeners();
 }
 
-// Draws the list of graduates for the Admin view
+/* Draws the list of graduates for the Admin view.
+*/
 function renderGraduates(gradsArray) {
     const container = document.getElementById('graduates-container');
     if (!container) return;
+    
     container.innerHTML = '';
 
     gradsArray.forEach(user => {
@@ -79,10 +83,12 @@ function renderGraduates(gradsArray) {
     });
 }
 
-// Draws the list of approved companies for the Admin view
+/* Draws the list of approved companies for the Admin view.
+*/
 function renderCompanies(companiesArray) {
     const container = document.getElementById('companies-container');
     if (!container) return;
+    
     container.innerHTML = '';
 
     companiesArray.forEach(company => {
@@ -104,11 +110,13 @@ function renderCompanies(companiesArray) {
     });
 }
 
-// Draws the abbreviated list of jobs shown on the Home dashboard
+/* Draws the abbreviated list of jobs shown on the Home dashboard.
+*/
 function renderRecentJobs(jobsArray, roleContext) {
     const container = document.getElementById('recent-jobs-container');
     const title = document.getElementById('home-jobs-title');
     const subtitle = document.getElementById('home-jobs-subtitle');
+    
     if (!container) return;
     
     container.innerHTML = '';
@@ -146,13 +154,15 @@ function renderRecentJobs(jobsArray, roleContext) {
     attachDetailsListeners();
 }
 
-// Draws either the company applicants list or the user's application history
+/* Draws either the company applicants list or the user's application history.
+*/
 function renderApplications(appsArray, roleContext) {
     const container = document.getElementById('applications-container');
     const title = document.getElementById('app-section-title');
     const subtitle = document.getElementById('app-section-subtitle');
     const icon = document.getElementById('app-section-icon');
     const viewAllBtn = document.getElementById('view-all-apps-btn');
+    
     if (!container) return;
     
     container.innerHTML = '';
@@ -212,7 +222,68 @@ function renderApplications(appsArray, roleContext) {
     }
 }
 
-// Binds click events to any "View Details" button currently on the screen
+/* Draws the dynamic profile card on the left side of the Home dashboard.
+   It looks at the current role and generates completely different data.
+*/
+function renderHomeProfile(roleContext) {
+    const container = document.getElementById('home-profile-container');
+    if (!container) return;
+
+    if (roleContext === 'user') {
+        // Generate the Applicant Card (Skills removed)
+        container.innerHTML = `
+            <div class="card profile-summary-card">
+                <div class="avatar-lg">JG</div>
+                <h3 style="margin-top: 12px;">${userProfileData.fullName}</h3>
+                <p class="subtext">${userProfileData.biodata}</p>
+                <hr>
+                <div class="profile-meta">
+                    <p><strong>📍 Location</strong> ${userProfileData.location}</p>
+                </div>
+                <button class="btn-outline w-full" style="margin-top: 16px;" onclick="document.querySelector('.nav-link[data-target=\\'account-view\\']').click()">
+                    Edit Profile
+                </button>
+            </div>
+        `;
+    } else if (roleContext === 'company') {
+        // Generate the Company Card
+        container.innerHTML = `
+            <div class="card profile-summary-card">
+                <div class="avatar-lg" style="background: #0f172a;">🏢</div>
+                <h3 style="margin-top: 12px;">${CURRENT_LOGGED_IN_COMPANY}</h3>
+                <p class="subtext">SDEAS Partner Company</p>
+                <hr>
+                <div class="profile-meta">
+                    <p><strong>📍 Location</strong> Manila, Philippines</p>
+                    <p><strong>💼 Active Postings</strong> ${jobsData.filter(job => job.company === CURRENT_LOGGED_IN_COMPANY).length}</p>
+                </div>
+                <button class="btn-outline w-full" style="margin-top: 16px;" onclick="document.querySelector('.nav-link[data-target=\\'account-view\\']').click()">
+                    View Settings
+                </button>
+            </div>
+        `;
+    } else if (roleContext === 'admin') {
+        // Generate the Admin Card
+        container.innerHTML = `
+            <div class="card profile-summary-card">
+                <div class="avatar-lg" style="background: #ef4444;">🛡️</div>
+                <h3 style="margin-top: 12px;">System Admin</h3>
+                <p class="subtext">Platform Management</p>
+                <hr>
+                <div class="profile-meta">
+                    <p><strong>👥 Total Users</strong> ${graduatesData.length}</p>
+                    <p><strong>🏢 Partners</strong> ${companiesData.length}</p>
+                </div>
+                <button class="btn-outline w-full" style="margin-top: 16px;" onclick="document.querySelector('.nav-link[data-target=\\'graduates-view\\']').click()">
+                    Manage Platform
+                </button>
+            </div>
+        `;
+    }
+}
+
+/* Binds click events to any "View Details" button currently on the screen.
+*/
 function attachDetailsListeners() {
     document.querySelectorAll('.view-details-btn').forEach(button => {
         button.addEventListener('click', (e) => {
@@ -223,7 +294,8 @@ function attachDetailsListeners() {
     });
 }
 
-// Builds the massive full-page view for a single job posting
+/* Builds the massive full-page view for a single job posting.
+*/
 function renderJobDetails(jobId) {
     // Search the database for the exact job matching the ID
     const job = jobsData.find(j => j.id === jobId);

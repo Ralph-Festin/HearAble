@@ -1,5 +1,5 @@
 /* ==========================================================================
-   components.css - UI Elements, Cards, Buttons, and Modals
+   components.css - Reusable UI Elements (Buttons, Cards, Badges, Inputs)
    ========================================================================== */
 
 /* --- Logos & Avatars --- */
@@ -29,6 +29,7 @@
     cursor: pointer;
 }
 
+/* The larger circular picture used inside profile cards and lists */
 .avatar-lg {
     width: 48px;
     height: 48px;
@@ -70,6 +71,65 @@
     background-color: var(--background-color);
 }
 
+/* --- Profile Dropdown Menu --- */
+.profile-dropdown-wrapper {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 120%; /* Pushes it just below the avatar */
+    right: 0;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 220px;
+    display: none; /* Hidden by default */
+    flex-direction: column;
+    z-index: 200;
+    overflow: hidden;
+}
+
+/* Added by JavaScript when clicked */
+.dropdown-menu.active {
+    display: flex;
+    animation: fadeIn 0.2s ease-in-out;
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    color: var(--primary-color);
+    transition: background-color 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: var(--background-color);
+}
+
+.dropdown-divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 4px 0;
+}
+
+.text-danger {
+    color: #ef4444;
+}
+
+.text-danger:hover {
+    background-color: #fef2f2;
+}
+
 /* --- Badges & Icons --- */
 .notification-wrapper {
     position: relative;
@@ -99,7 +159,7 @@
     font-size: 1.25rem;
 }
 
-/* --- Cards --- */
+/* --- Cards (The standard white box container) --- */
 .card {
     background-color: var(--surface-color);
     border: 1px solid var(--border-color);
@@ -132,6 +192,45 @@
 
 .inner-card h4 { margin-bottom: 4px; }
 .inner-card p { font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 12px; }
+
+/* The styling for the Home Dashboard Sidebar Profile */
+.profile-summary-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.profile-summary-card .avatar-lg {
+    width: 80px;
+    height: 80px;
+    font-size: 2rem;
+    margin-bottom: 16px;
+}
+
+.profile-summary-card hr {
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 16px 0;
+}
+
+.profile-meta {
+    width: 100%;
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+.profile-meta p {
+    margin-bottom: 12px;
+    color: var(--secondary-text);
+}
+
+.profile-meta strong {
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: 2px;
+}
 
 .stat-card {
     flex: 1;
@@ -273,8 +372,6 @@
 .status-badge.pending { background-color: var(--warning-bg); color: var(--warning-color); }
 .status-badge.accepted { background-color: var(--success-bg); color: var(--success-color); }
 .status-badge.Active { background-color: var(--success-bg); color: var(--success-color); border: 1px solid #6ee7b7; }
-.status-badge.Pending { background-color: var(--warning-bg); color: var(--warning-color); border: 1px solid #fcd34d; }
-
 .status-badge.Pending { background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
 .status-badge.Reviewing { background-color: #eff6ff; color: #2563eb; }
 
@@ -300,7 +397,7 @@
     border-style: dashed;
 }
 
-/* --- Filters --- */
+/* --- Search & Filters --- */
 .filter-panel {
     display: flex;
     gap: 12px;
@@ -341,7 +438,7 @@
 
 .results-counter { font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 16px; font-weight: 500; }
 
-/* --- Job Board Specific --- */
+/* --- Job Board Specific Components --- */
 .job-board-item {
     background-color: var(--surface-color);
     border: 1px solid var(--border-color);
@@ -376,7 +473,7 @@
     border-top: 1px solid var(--border-color);
 }
 
-/* --- Job Details View --- */
+/* --- Job Details Full View --- */
 .details-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
 .details-title { font-size: 1.75rem; font-weight: 600; }
 .details-meta { display: flex; gap: 16px; color: var(--secondary-text); margin-bottom: 16px; font-size: 0.95rem; }
@@ -411,7 +508,7 @@
 
 .action-footer { border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 24px; }
 
-/* --- Role Switcher --- */
+/* --- Role Switcher Controls --- */
 .role-switcher-card { background-color: var(--blue-bg); border-color: #bfdbfe; }
 .toggle-group {
     display: flex;
@@ -457,7 +554,7 @@
 .applicant-details .job-title { color: var(--secondary-text); font-size: 0.9rem; margin-bottom: 8px; }
 .applicant-details .applied-date { color: var(--secondary-text); font-size: 0.8rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 
-/* --- Modals --- */
+/* --- Modals (The Popups) --- */
 .modal {
     display: none; 
     position: fixed;
@@ -498,15 +595,46 @@
 }
 #add-job-form input:focus, #add-job-form select:focus, #add-job-form textarea:focus { border-color: var(--blue-accent); }
 
-/* --- Utility Classes --- */
-.max-w-sm {
-    max-width: 320px;
-}
+/* --- Helper/Utility Classes --- */
+.max-w-sm { max-width: 320px; }
+.w-full { width: 100%; }
 
 .header-actions {
     display: flex;
     align-items: center;
     gap: 16px;
+}
+
+/* ==========================================================================
+   User Profile Grid Layout
+   ========================================================================== */
+.profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 24px;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.profile-field label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.profile-field p {
+    font-size: 0.95rem;
+    color: var(--secondary-text);
+}
+
+/* Makes an input stretch across the entire row rather than just one column */
+.profile-field-full {
+    grid-column: 1 / -1;
 }
 
 /* --- Mobile Component Adjustments --- */
@@ -544,41 +672,9 @@
     .header-actions .search-box-wrapper.max-w-sm {
         max-width: 100%;
     }
-}
 
-/* ==========================================================================
-   User Profile Grid Layout
-   ========================================================================== */
-.profile-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 24px;
-}
-
-.profile-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.profile-field label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.profile-field p {
-    font-size: 0.95rem;
-    color: var(--secondary-text);
-}
-
-.profile-field-full {
-    grid-column: 1 / -1;
-}
-
-@media (max-width: 768px) {
     .profile-grid {
         grid-template-columns: 1fr;
     }
+    
 }

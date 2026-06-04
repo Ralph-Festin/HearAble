@@ -1,192 +1,198 @@
-/* navigation.js 
-   This is the brain of the application. It handles filling the screen with HTML,
-   deciding which data to show based on the user's role, and setting up all the click events.
-*/
+/* ==========================================================================
+   navigation.js - Routing, Layout Setup, and Access Control
+   ========================================================================== */
 
-// Before anything else happens, we inject our HTML templates into the blank index.html
+// Inject our HTML templates into the blank index.html
 mountViews();
 
-// DOMContentLoaded ensures the browser has finished reading the HTML before we try to modify it
 document.addEventListener('DOMContentLoaded', () => {
-    // Generate the initial UI state based on whatever role is currently active
     updateDashboardsForCurrentRole();
     renderGraduates(graduatesData);
     renderCompanies(companiesData);
     
-    // Attach event listeners to make buttons and search bars interactive
     setupNavigation();
     setupViewAllButton(); 
     setupBackButton();
     setupRoleSwitcher(); 
     setupSearchAndFilters();
+    setupProfileDropdown(); 
+
+    // ---> ROUTER: Initialize the Hash Router <---
+    // Listen for anytime the URL changes (e.g., user clicks the Back button)
+    window.addEventListener('hashchange', handleRouting);
+    
+    // Run it once immediately when the page loads to check if they refreshed on a specific page
+    handleRouting(); 
 });
 
-// Takes the string templates from views.js and inserts them into the empty containers
+/* ==========================================================================
+   HASH ROUTER LOGIC
+   ========================================================================== */
+function handleRouting() {
+    // Grab the text after the '#' in the URL (e.g., "jobs-view")
+    let hash = window.location.hash.substring(1);
+
+    // If there is no hash (they just typed index.html), default to the home page
+    if (!hash) {
+        window.location.hash = 'home-view';
+        return; // Changing the hash will trigger this function again automatically
+    }
+
+    // 1. Hide all views and remove highlights from all navbar links
+    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+
+    // 2. Find the view that matches the URL hash and show it
+    const targetView = document.getElementById(hash);
+    if (targetView) targetView.classList.add('active');
+
+    // 3. Find the navbar button that matches the URL hash and highlight it
+    const targetLink = document.querySelector(`.nav-link[data-target="${hash}"]`);
+    if (targetLink) targetLink.classList.add('active');
+}
+
+/* HELPER: Now, changing a view is as simple as updating the URL! */
+function switchToView(viewId) {
+    window.location.hash = viewId;
+}
+
+/* ==========================================================================
+   Existing Setup Functions
+   ========================================================================== */
 function mountViews() {
     const homeView = document.getElementById('home-view');
     const jobsView = document.getElementById('jobs-view');
     const gradsView = document.getElementById('graduates-view');
     const compsView = document.getElementById('companies-view');
     const detailsView = document.getElementById('job-details-view');
-    const accView = document.getElementById('account-view');
+    const profileView = document.getElementById('profile-view');
+    const switchAccountView = document.getElementById('switch-account-view');
+    const notifView = document.getElementById('notifications-view');
 
-    // We check if the element exists before trying to modify it to prevent errors
     if(homeView) homeView.innerHTML = ViewTemplates.home;
     if(jobsView) jobsView.innerHTML = ViewTemplates.jobs;
     if(gradsView) gradsView.innerHTML = ViewTemplates.graduates;
     if(compsView) compsView.innerHTML = ViewTemplates.companies;
     if(detailsView) detailsView.innerHTML = ViewTemplates.jobDetails;
-    if(accView) accView.innerHTML = ViewTemplates.account;
+    if(profileView) profileView.innerHTML = ViewTemplates.profile;
+    if(switchAccountView) switchAccountView.innerHTML = ViewTemplates.switchAccount;
+    if(notifView) notifView.innerHTML = ViewTemplates.notifications;
 }
 
-// Looks at the currently selected role and figures out what data should be displayed
 function updateDashboardsForCurrentRole() {
-    // Finds the button with the 'active' class to determine the current role
     const currentRole = document.querySelector('.role-btn.active').getAttribute('data-role');
     
-    // Filters the job list. Companies only see their own jobs, everyone else sees all jobs.
+    if (typeof renderHomeProfile === 'function') {
+        renderHomeProfile(currentRole);
+    }
+
     const displayJobs = currentRole === 'company' 
         ? jobsData.filter(job => job.company === CURRENT_LOGGED_IN_COMPANY) 
         : jobsData;
     
-    // Passes the filtered list to the drawing function
     renderJobs(displayJobs);
 
-    // Determines what goes on the home screen. Companies see their full list, users see the top few.
     const recentJobs = currentRole === 'company'
         ? displayJobs 
         : jobsData.slice(0, 2); 
     
-    // Passes the filtered home list and the role context to adjust titles
     renderRecentJobs(recentJobs, currentRole);
 
-    // Filters applicant data. Companies only see people who applied to them.
     const displayApps = currentRole === 'company'
         ? applicationsData.filter(app => app.company === CURRENT_LOGGED_IN_COMPANY)
         : []; 
     renderApplications(displayApps, currentRole);
 }
 
-// Handles switching between main tabs (Home, Jobs, Account)
 function setupNavigation() {
     const navLinks = document.querySelectorAll('.nav-link');
-    const viewSections = document.querySelectorAll('.view-section');
-
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
-            // Remove the 'active' class from all links and sections
-            navLinks.forEach(l => l.classList.remove('active'));
-            viewSections.forEach(v => v.classList.remove('active'));
-            
-            // Add 'active' back to only the link that was clicked
-            link.classList.add('active');
-            
-            // Find the target section ID stored in the button's data attribute and make it visible
             const targetId = link.getAttribute('data-target');
-            document.getElementById(targetId).classList.add('active');
+            switchToView(targetId);
         });
     });
 }
 
-// Helper to switch to the jobs tab when clicking a "View All" button
 function setupViewAllButton() {
     const viewAllBtn = document.getElementById('view-all-jobs-btn');
     if (viewAllBtn) {
         viewAllBtn.addEventListener('click', () => {
-            // Simulates a click on the actual navigation link to trigger the view change
-            const jobsTab = document.querySelector('.nav-link[data-target="jobs-view"]');
-            if (jobsTab) jobsTab.click();
+            switchToView('jobs-view');
         });
     }
 }
 
-// Helper to return to the jobs list from the detailed view
 function setupBackButton() {
     const backBtn = document.getElementById('back-to-jobs');
     if (backBtn) {
         backBtn.addEventListener('click', () => {
-            const jobsTab = document.querySelector('.nav-link[data-target="jobs-view"]');
-            if (jobsTab) jobsTab.click();
+            switchToView('jobs-view');
         });
     }
 }
 
-// Manually forces the application to display the job details screen
 function navigateToDetails() {
-    document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    
-    document.getElementById('job-details-view').classList.add('active');
-    document.querySelector('.nav-link[data-target="jobs-view"]').classList.add('active');
+    switchToView('job-details-view');
 }
 
-// Handles the logic when a user changes their role preview in Account Settings
 function setupRoleSwitcher() {
     const roleButtons = document.querySelectorAll('.role-btn');
     const roleContents = document.querySelectorAll('.role-content');
     const addJobBtn = document.getElementById('add-job-btn'); 
     const adminNavLinks = document.querySelectorAll('.nav-link.admin-only');
 
-    // Default the 'Add Job' button to hidden
     if (addJobBtn) addJobBtn.style.display = 'none';
 
     roleButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            // Visual toggle to highlight the active button
+        btn.addEventListener('click', (e) => {
             roleButtons.forEach(b => b.classList.remove('active'));
             roleContents.forEach(c => c.classList.remove('active'));
             btn.classList.add('active');
 
-            // Show the correct settings panel based on the selected role
             const targetRole = btn.getAttribute('data-role');
             document.getElementById(`role-content-${targetRole}`).classList.add('active');
 
-            // Only companies are allowed to post jobs
             if (addJobBtn) {
                 addJobBtn.style.display = targetRole === 'company' ? 'block' : 'none';
             }
             
-            // Only admins get to see the Graduates and Companies links in the navbar
             adminNavLinks.forEach(link => {
                 link.style.display = targetRole === 'admin' ? 'flex' : 'none';
             });
-
-            // Security catch: If someone is on an admin page and switches to a standard user, boot them to home
-            if (targetRole !== 'admin') {
-                const isViewingAdminPage = document.querySelector('#graduates-view.active, #companies-view.active');
-                if (isViewingAdminPage) {
-                    document.querySelector('.nav-link[data-target="home-view"]').click();
-                }
-            }
             
-            // Recalculate what data should be shown across the entire app
             updateDashboardsForCurrentRole();
+
+            // e.isTrusted prevents the app from auto-navigating home on page refresh
+            if (e.isTrusted) {
+                switchToView('home-view');
+            }
         });
     });
+
+    const defaultRoleBtn = document.querySelector('.role-btn.active');
+    if (defaultRoleBtn) {
+        defaultRoleBtn.click();
+    }
 }
 
-// Connects typing in search bars to filtering the data arrays
 function setupSearchAndFilters() {
     const jobSearchInput = document.querySelector('#jobs-view .search-input');
     if (jobSearchInput) {
-        // Triggers every time a letter is typed
         jobSearchInput.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
             const currentRole = document.querySelector('.role-btn.active').getAttribute('data-role');
             
-            // Base the search pool on the current role
             let baseJobs = currentRole === 'company' 
                 ? jobsData.filter(job => job.company === CURRENT_LOGGED_IN_COMPANY)
                 : jobsData;
 
-            // Filter the pool looking for matches in title, company, or description
             const filteredJobs = baseJobs.filter(job => 
                 job.title.toLowerCase().includes(searchTerm) || 
                 job.company.toLowerCase().includes(searchTerm) ||
                 job.description.toLowerCase().includes(searchTerm)
             );
 
-            // Ask rendering.js to redraw the screen with only the matches
             renderJobs(filteredJobs);
         });
     }
@@ -215,4 +221,40 @@ function setupSearchAndFilters() {
             renderCompanies(filteredCompanies);
         });
     }
+}
+
+function setupProfileDropdown() {
+    const trigger = document.getElementById('profile-dropdown-trigger');
+    const menu = document.getElementById('profile-dropdown-menu');
+
+    if (!trigger || !menu) return;
+
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation(); 
+        menu.classList.toggle('active');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target)) {
+            menu.classList.remove('active');
+        }
+    });
+
+    const items = menu.querySelectorAll('.dropdown-item');
+    items.forEach(item => {
+        item.addEventListener('click', (e) => {
+            const action = e.currentTarget.getAttribute('data-action');
+            
+            // Uses the URL router to open the correct pages
+            if (action === 'view-profile') {
+                switchToView('profile-view');
+            } else if (action === 'switch-account') {
+                switchToView('switch-account-view');
+            } else if (action === 'sign-out') {
+                alert('Logging out of HearAble...');
+            }
+            
+            menu.classList.remove('active');
+        });
+    });
 }

@@ -1,6 +1,11 @@
 /* ==========================================================================
-   base.css - Variables, Resets, and Typography
+   base.css - Variables, Resets, and Global Typography
    ========================================================================== */
+
+/* The :root section is your master control panel. 
+   If you ever want to change the primary brand color, you only change it here, 
+   and it automatically updates everywhere across the entire app! 
+*/
 :root {
     --primary-color: #0f172a;
     --secondary-text: #64748b;
@@ -18,17 +23,26 @@
     --warning-bg: #fffbeb;
     
     --font-family: 'Inter', sans-serif;
+    
     --radius-sm: 6px;
     --radius-md: 12px;
     --radius-lg: 16px;
 }
 
+/*
+   Forces the vertical scrollbar track to always exist, 
+   preventing the layout from shifting when navigating between pages.
+*/
+html {
+    overflow-y: scroll;
+}
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
+/* Setting the global defaults for the entire web page */
 body {
     font-family: var(--font-family);
     background-color: var(--background-color);
@@ -36,6 +50,7 @@ body {
     line-height: 1.5;
 }
 
+/* A simple, smooth animation used when switching between views */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
     to { opacity: 1; transform: translateY(0); }
