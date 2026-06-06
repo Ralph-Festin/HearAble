@@ -5,7 +5,7 @@
 /* --- Logos & Avatars --- */
 .logo-box {
     background-color: var(--primary-color);
-    color: white;
+    color: #ffffff; /* Always white text inside the logo box */
     width: 32px;
     height: 32px;
     display: flex;
@@ -29,13 +29,13 @@
     cursor: pointer;
 }
 
-/* The larger circular picture used inside profile cards and lists */
 .avatar-lg {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #6366f1, #a855f7); 
-    color: white;
+    /* Updated to a Benilde Green & Gold subtle gradient */
+    background: linear-gradient(135deg, var(--primary-color), var(--blue-accent)); 
+    color: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -61,37 +61,41 @@
 }
 
 .nav-link:hover {
-    background-color: var(--background-color);
-    color: var(--primary-color);
+    background-color: rgba(0, 0, 0, 0.05); /* Adds a subtle dark tint on hover */
+    color: var(--text-color);
+}
+
+/* In Dark Mode, you'd want the hover to be a white tint instead so it shows up */
+@media (prefers-color-scheme: dark) {
+    .nav-link:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+    }
 }
 
 .nav-link.active {
-    color: var(--primary-color);
-    font-weight: 500;
-    background-color: var(--background-color);
+    color: var(--text-color);
+    font-weight: 600; 
+    background-color: var(--border-color); 
 }
 
 /* --- Profile Dropdown Menu --- */
-.profile-dropdown-wrapper {
-    position: relative;
-}
+.profile-dropdown-wrapper { position: relative; }
 
 .dropdown-menu {
     position: absolute;
-    top: 120%; /* Pushes it just below the avatar */
+    top: 120%; 
     right: 0;
     background-color: var(--surface-color);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     width: 220px;
-    display: none; /* Hidden by default */
+    display: none; 
     flex-direction: column;
     z-index: 200;
     overflow: hidden;
 }
 
-/* Added by JavaScript when clicked */
 .dropdown-menu.active {
     display: flex;
     animation: fadeIn 0.2s ease-in-out;
@@ -108,33 +112,17 @@
     gap: 12px;
     font-family: inherit;
     font-size: 0.95rem;
-    color: var(--primary-color);
+    color: var(--text-color);
     transition: background-color 0.2s;
 }
 
-.dropdown-item:hover {
-    background-color: var(--background-color);
-}
-
-.dropdown-divider {
-    height: 1px;
-    background-color: var(--border-color);
-    margin: 4px 0;
-}
-
-.text-danger {
-    color: #ef4444;
-}
-
-.text-danger:hover {
-    background-color: #fef2f2;
-}
+.dropdown-item:hover { background-color: var(--background-color); }
+.dropdown-divider { height: 1px; background-color: var(--border-color); margin: 4px 0; }
+.text-danger { color: #ef4444; }
+.text-danger:hover { background-color: rgba(239, 68, 68, 0.1); } /* Dark mode safe hover */
 
 /* --- Badges & Icons --- */
-.notification-wrapper {
-    position: relative;
-    cursor: pointer;
-}
+.notification-wrapper { position: relative; cursor: pointer; }
 
 .badge {
     position: absolute;
@@ -159,7 +147,7 @@
     font-size: 1.25rem;
 }
 
-/* --- Cards (The standard white box container) --- */
+/* --- Cards --- */
 .card {
     background-color: var(--surface-color);
     border: 1px solid var(--border-color);
@@ -168,19 +156,9 @@
     margin-bottom: 24px;
 }
 
-.section-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 20px;
-}
-
-.section-header h3 { font-size: 1.125rem; }
-
-.subtext {
-    font-size: 0.875rem;
-    color: var(--secondary-text);
-}
+.section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.section-header h3 { font-size: 1.125rem; color: var(--text-color); }
+.subtext { font-size: 0.875rem; color: var(--secondary-text); }
 
 .inner-card {
     background-color: var(--background-color);
@@ -190,47 +168,16 @@
     margin-bottom: 12px;
 }
 
-.inner-card h4 { margin-bottom: 4px; }
+.inner-card h4 { margin-bottom: 4px; color: var(--text-color); }
 .inner-card p { font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 12px; }
 
 /* The styling for the Home Dashboard Sidebar Profile */
-.profile-summary-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-}
-
-.profile-summary-card .avatar-lg {
-    width: 80px;
-    height: 80px;
-    font-size: 2rem;
-    margin-bottom: 16px;
-}
-
-.profile-summary-card hr {
-    width: 100%;
-    border: none;
-    border-top: 1px solid var(--border-color);
-    margin: 16px 0;
-}
-
-.profile-meta {
-    width: 100%;
-    text-align: left;
-    font-size: 0.9rem;
-}
-
-.profile-meta p {
-    margin-bottom: 12px;
-    color: var(--secondary-text);
-}
-
-.profile-meta strong {
-    color: var(--primary-color);
-    display: block;
-    margin-bottom: 2px;
-}
+.profile-summary-card { display: flex; flex-direction: column; align-items: center; text-align: center; }
+.profile-summary-card .avatar-lg { width: 80px; height: 80px; font-size: 2rem; margin-bottom: 16px; }
+.profile-summary-card hr { width: 100%; border: none; border-top: 1px solid var(--border-color); margin: 16px 0; }
+.profile-meta { width: 100%; text-align: left; font-size: 0.9rem; }
+.profile-meta p { margin-bottom: 12px; color: var(--secondary-text); }
+.profile-meta strong { color: var(--text-color); display: block; margin-bottom: 2px; }
 
 .stat-card {
     flex: 1;
@@ -242,14 +189,13 @@
     flex-direction: column;
     gap: 8px;
 }
-
 .stat-label { font-size: 0.9rem; color: var(--secondary-text); font-weight: 500; }
-.stat-number { font-size: 2rem; font-weight: 600; }
+.stat-number { font-size: 2rem; font-weight: 600; color: var(--text-color); }
 
 /* --- Buttons --- */
 .btn-black {
     background-color: var(--primary-color);
-    color: white;
+    color: #ffffff; /* Explicitly white text for buttons */
     border: none;
     padding: 10px 16px;
     border-radius: var(--radius-sm);
@@ -258,11 +204,11 @@
     font-family: inherit;
     transition: background-color 0.2s;
 }
-.btn-black:hover { background-color: #334155; }
+.btn-black:hover { background-color: var(--primary-hover); }
 
 .btn-outline {
     background-color: transparent;
-    color: var(--primary-color);
+    color: var(--text-color);
     border: 1px solid var(--border-color);
     padding: 8px 16px;
     border-radius: var(--radius-sm);
@@ -278,7 +224,7 @@
     border: none;
     font-size: 0.95rem;
     font-weight: 500;
-    color: var(--primary-color);
+    color: var(--text-color);
     cursor: pointer;
     margin-bottom: 20px;
     display: flex;
@@ -289,8 +235,8 @@
 .back-btn:hover { color: var(--blue-accent); }
 
 .btn-disabled {
-    background-color: #8c929d;
-    color: white;
+    background-color: var(--border-color);
+    color: var(--secondary-text);
     border: none;
     padding: 10px 20px;
     border-radius: var(--radius-sm);
@@ -301,54 +247,28 @@
 
 .btn-apply {
     background-color: var(--blue-accent);
-    color: white;
+    color: #111827; /* Dark text for contrast on the Gold/Green accent */
     border: none;
     padding: 10px 20px;
     border-radius: var(--radius-sm);
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     font-family: inherit;
 }
-.btn-apply:hover { background-color: #2563eb; }
+.btn-apply:hover { opacity: 0.9; }
 
 /* --- Lists & Job Items --- */
-.card-header-flex {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 24px;
-}
-
-.list-item, .list-item-status {
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 0;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.list-item:last-child, .list-item-status:last-child {
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
+.card-header-flex { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; }
+.list-item, .list-item-status { display: flex; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border-color); }
+.list-item:last-child, .list-item-status:last-child { border-bottom: none; padding-bottom: 0; }
 .list-item-status { align-items: center; }
 
-.item-content {
-    flex: 1;
-    padding-right: 24px;
-}
-
-.item-content h4 { font-size: 1.1rem; margin-bottom: 4px; }
+.item-content { flex: 1; padding-right: 24px; }
+.item-content h4 { font-size: 1.1rem; margin-bottom: 4px; color: var(--text-color); }
 .company-info { font-size: 0.875rem; color: var(--secondary-text); margin-bottom: 8px; font-weight: 500; }
 .description { font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 12px; }
 .timestamp { font-size: 0.8rem; color: var(--secondary-text); font-weight: 500; }
-
-.item-actions {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-between;
-}
+.item-actions { display: flex; flex-direction: column; align-items: flex-end; justify-content: space-between; }
 
 /* --- Tags & Badges --- */
 .tag {
@@ -371,17 +291,11 @@
 .status-badge.reviewing { background-color: var(--blue-bg); color: var(--blue-accent); }
 .status-badge.pending { background-color: var(--warning-bg); color: var(--warning-color); }
 .status-badge.accepted { background-color: var(--success-bg); color: var(--success-color); }
-.status-badge.Active { background-color: var(--success-bg); color: var(--success-color); border: 1px solid #6ee7b7; }
-.status-badge.Pending { background-color: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
-.status-badge.Reviewing { background-color: #eff6ff; color: #2563eb; }
+.status-badge.Active { background-color: var(--success-bg); color: var(--success-color); border: 1px solid var(--success-color); }
+.status-badge.Pending { background-color: var(--background-color); color: var(--secondary-text); border: 1px solid var(--border-color); }
+.status-badge.Reviewing { background-color: var(--blue-bg); color: var(--blue-accent); }
 
-.pill-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
 .skill-pill {
     background-color: var(--background-color);
     border: 1px solid var(--border-color);
@@ -391,51 +305,53 @@
     font-size: 0.8rem;
     font-weight: 500;
 }
-
-.highlight-pill {
-    background-color: var(--surface-color);
-    border-style: dashed;
-}
+.highlight-pill { background-color: var(--surface-color); border-style: dashed; }
 
 /* --- Search & Filters --- */
-.filter-panel {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.search-box-wrapper {
-    flex: 1;
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.search-icon {
-    position: absolute;
-    left: 12px;
-    color: var(--secondary-text);
+.filter-panel { display: flex; gap: 12px; margin-bottom: 24px; }
+.search-box-wrapper { flex: 1; position: relative; display: flex; align-items: center; }
+.search-icon { 
+    position: absolute; 
+    left: 16px; 
+    font-size: 1.15rem; /* Made the magnifying glass a bit larger */
+    color: var(--secondary-text); 
 }
 
 .search-input {
     width: 100%;
-    padding: 10px 10px 10px 40px;
+    padding: 14px 16px 14px 48px; /* Increased vertical padding and left room for the bigger icon */
     border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md); /* Switched to medium radius so it doesn't look too boxy */
     font-family: inherit;
-    font-size: 0.95rem;
+    font-size: 1.05rem; /* Bumbed up the text size for readability */
+    background-color: var(--surface-color);
+    color: var(--text-color);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02); /* Added a very subtle shadow to make it pop off the background */
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
+/* Added a focus state so it glows slightly when the user is typing */
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 87, 63, 0.1); /* Uses the Benilde Green variable */
+}
+
+/* Update for Dark Mode focus state */
+@media (prefers-color-scheme: dark) {
+    .search-input:focus {
+        box-shadow: 0 0 0 3px rgba(0, 214, 143, 0.15); /* Brighter green glow for dark mode */
+    }
+}
 .filter-select {
     padding: 10px 16px;
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     background-color: var(--surface-color);
     font-family: inherit;
-    color: var(--primary-color);
+    color: var(--text-color);
     cursor: pointer;
 }
-
 .results-counter { font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 16px; font-weight: 500; }
 
 /* --- Job Board Specific Components --- */
@@ -446,43 +362,22 @@
     padding: 24px;
     margin-bottom: 16px;
 }
-
 .job-board-header { margin-bottom: 16px; }
-
-.job-title-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.job-title-row h4 { font-size: 1.25rem; }
-
-.job-meta-details {
-    display: flex;
-    gap: 16px;
-    font-size: 0.875rem;
-    color: var(--secondary-text);
-    font-weight: 500;
-}
-
-.job-board-footer {
-    display: flex;
-    justify-content: flex-end;
-    padding-top: 16px;
-    border-top: 1px solid var(--border-color);
-}
+.job-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.job-title-row h4 { font-size: 1.25rem; color: var(--text-color); }
+.job-meta-details { display: flex; gap: 16px; font-size: 0.875rem; color: var(--secondary-text); font-weight: 500; }
+.job-board-footer { display: flex; justify-content: flex-end; padding-top: 16px; border-top: 1px solid var(--border-color); }
 
 /* --- Job Details Full View --- */
 .details-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-.details-title { font-size: 1.75rem; font-weight: 600; }
+.details-title { font-size: 1.75rem; font-weight: 600; color: var(--text-color); }
 .details-meta { display: flex; gap: 16px; color: var(--secondary-text); margin-bottom: 16px; font-size: 0.95rem; }
 .details-meta span { display: flex; align-items: center; gap: 6px; }
 .details-date { color: var(--secondary-text); font-size: 0.85rem; margin-bottom: 24px; }
 
 .alert-success {
     background-color: var(--success-bg);
-    border: 1px solid #6ee7b7;
+    border: 1px solid var(--success-color);
     color: var(--success-color);
     padding: 12px 16px;
     border-radius: var(--radius-sm);
@@ -494,22 +389,21 @@
 }
 
 .details-section { margin-bottom: 24px; }
-.details-section h4 { font-size: 1.1rem; margin-bottom: 12px; }
-.details-section p { font-size: 0.95rem; color: var(--primary-color); line-height: 1.6; }
+.details-section h4 { font-size: 1.1rem; margin-bottom: 12px; color: var(--text-color); }
+.details-section p { font-size: 0.95rem; color: var(--text-color); line-height: 1.6; }
 
-.requirements-list { padding-left: 20px; font-size: 0.95rem; line-height: 1.8; }
+.requirements-list { padding-left: 20px; font-size: 0.95rem; line-height: 1.8; color: var(--text-color); }
 .requirements-list li { color: var(--blue-accent); }
-.requirements-list li span { color: var(--primary-color); }
+.requirements-list li span { color: var(--text-color); }
 
-.company-card { background-color: var(--background-color); padding: 20px; border-radius: var(--radius-sm); }
-.company-card h5 { font-size: 1rem; margin-bottom: 4px; }
+.company-card { background-color: var(--background-color); padding: 20px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); }
+.company-card h5 { font-size: 1rem; margin-bottom: 4px; color: var(--text-color); }
 .company-card p { font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 12px; }
-.company-card .company-desc { color: var(--primary-color); margin-bottom: 0; }
-
+.company-card .company-desc { color: var(--text-color); margin-bottom: 0; }
 .action-footer { border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 24px; }
 
 /* --- Role Switcher Controls --- */
-.role-switcher-card { background-color: var(--blue-bg); border-color: #bfdbfe; }
+.role-switcher-card { background-color: var(--blue-bg); border: 1px solid var(--blue-accent); }
 .toggle-group {
     display: flex;
     background-color: var(--surface-color);
@@ -533,8 +427,8 @@
     transition: all 0.2s;
 }
 
-.role-btn:hover { color: var(--primary-color); background-color: var(--background-color); }
-.role-btn.active { background-color: var(--primary-color); color: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+.role-btn:hover { color: var(--text-color); background-color: var(--background-color); }
+.role-btn.active { background-color: var(--primary-color); color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
 .role-content { display: none; animation: fadeIn 0.3s ease-in-out; }
 .role-content.active { display: block; }
 
@@ -548,9 +442,8 @@
     justify-content: space-between;
     align-items: flex-start;
 }
-
 .applicant-info-wrapper { display: flex; gap: 16px; }
-.applicant-details h4 { margin-bottom: 2px; font-size: 1.05rem; }
+.applicant-details h4 { margin-bottom: 2px; font-size: 1.05rem; color: var(--text-color); }
 .applicant-details .job-title { color: var(--secondary-text); font-size: 0.9rem; margin-bottom: 8px; }
 .applicant-details .applied-date { color: var(--secondary-text); font-size: 0.8rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 
@@ -563,12 +456,11 @@
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.7);
     align-items: center;
     justify-content: center;
     backdrop-filter: blur(4px);
 }
-
 .modal-content {
     background-color: var(--surface-color);
     padding: 32px;
@@ -578,14 +470,15 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
-
-.modal-content h3 { font-size: 1.25rem; margin-bottom: 4px; }
+.modal-content h3 { font-size: 1.25rem; margin-bottom: 4px; color: var(--text-color); }
 
 #add-job-form { display: flex; flex-direction: column; gap: 16px; }
 #add-job-form input, #add-job-form select, #add-job-form textarea {
     padding: 12px;
+    background-color: var(--background-color);
+    color: var(--text-color);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-sm);
     font-family: inherit;
@@ -593,88 +486,34 @@
     outline: none;
     transition: border-color 0.2s;
 }
-#add-job-form input:focus, #add-job-form select:focus, #add-job-form textarea:focus { border-color: var(--blue-accent); }
+#add-job-form input:focus, #add-job-form select:focus, #add-job-form textarea:focus { border-color: var(--primary-color); }
 
 /* --- Helper/Utility Classes --- */
 .max-w-sm { max-width: 320px; }
 .w-full { width: 100%; }
-
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-}
+.header-actions { display: flex; align-items: center; gap: 16px; }
 
 /* ==========================================================================
    User Profile Grid Layout
    ========================================================================== */
-.profile-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 24px;
-    margin-top: 24px;
-}
-
-.profile-field {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.profile-field label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--primary-color);
-}
-
-.profile-field p {
-    font-size: 0.95rem;
-    color: var(--secondary-text);
-}
-
-/* Makes an input stretch across the entire row rather than just one column */
-.profile-field-full {
-    grid-column: 1 / -1;
-}
+.profile-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px; }
+.profile-field { display: flex; flex-direction: column; gap: 8px; }
+.profile-field label { font-size: 0.9rem; font-weight: 600; color: var(--text-color); }
+.profile-field p { font-size: 0.95rem; color: var(--secondary-text); }
+.profile-field-full { grid-column: 1 / -1; }
 
 /* --- Mobile Component Adjustments --- */
 @media (max-width: 768px) {
-    .card-header-flex, 
-    .list-item {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
-    }
-    
-    .item-actions {
-        align-items: flex-start;
-        flex-direction: row;
-        width: 100%;
-    }
-
+    .card-header-flex, .list-item { flex-direction: column; align-items: flex-start; gap: 12px; }
+    .item-actions { align-items: flex-start; flex-direction: row; width: 100%; }
     .filter-panel { flex-direction: column; }
     .job-meta-details { flex-direction: column; gap: 8px; }
-    
     .details-header { flex-direction: column; gap: 8px; }
     .details-meta { flex-direction: column; gap: 8px; }
-
     .applicant-card { flex-direction: column; gap: 16px; }
     .applicant-card .status-badge { align-self: flex-start; }
-    
     .toggle-group { flex-direction: column; }
-
-    .header-actions {
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-    }
-    
-    .header-actions .search-box-wrapper.max-w-sm {
-        max-width: 100%;
-    }
-
-    .profile-grid {
-        grid-template-columns: 1fr;
-    }
-    
+    .header-actions { flex-direction: column; align-items: flex-start; width: 100%; }
+    .header-actions .search-box-wrapper.max-w-sm { max-width: 100%; }
+    .profile-grid { grid-template-columns: 1fr; }
 }

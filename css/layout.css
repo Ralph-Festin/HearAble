@@ -108,6 +108,52 @@
     align-items: start;
 }
 
+/* ==========================================================================
+   Split View Layout (Master-Detail)
+   ========================================================================== */
+.jobs-split-layout {
+    display: grid;
+    grid-template-columns: 1fr; /* Starts as 1 full-width column */
+    gap: 24px;
+    align-items: start;
+    transition: all 0.3s ease;
+}
+
+/* When a job is clicked, the grid splits into two columns */
+.jobs-split-layout.active-split {
+    grid-template-columns: 380px 1fr; /* Left side 380px, right side takes the rest */
+}
+
+/* Hide the right column by default */
+.job-details-column {
+    display: none; 
+    position: sticky;
+    top: 100px; /* Keeps the details glued to the screen when scrolling the left list */
+    height: calc(100vh - 120px);
+    overflow-y: auto;
+    padding-bottom: 32px;
+}
+
+/* Show the right column when active */
+.jobs-split-layout.active-split .job-details-column {
+    display: block;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Highlight the card that was clicked */
+.job-board-item.selected {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 1px var(--primary-color);
+}
+
+/* Make it stack gracefully on mobile phones */
+@media (max-width: 768px) {
+    .jobs-split-layout.active-split {
+        grid-template-columns: 1fr; 
+    }
+    .job-details-column { position: static; height: auto; overflow-y: visible; }
+}
+
 /* Mobile responsive rules specifically for the layout */
 @media (max-width: 768px) {
     /* Stack the stats boxes on top of each other */

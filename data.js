@@ -63,9 +63,36 @@ let graduatesData = [
 ];
 
 let companiesData = [
-    { id: 301, name: "Tech Solutions Inc.", location: "Manila, Philippines", jobsPosted: 5, status: "Active" },
-    { id: 302, name: "Digital Innovations", location: "Quezon City, Philippines", jobsPosted: 2, status: "Active" },
-    { id: 303, name: "Creative Studios", location: "Makati, Philippines", jobsPosted: 0, status: "Pending" }
+    { 
+        id: 301, 
+        name: "Tech Solutions Inc.", 
+        location: "Manila, Philippines", 
+        jobsPosted: 5, 
+        status: "Active",
+        industry: "Software Development",
+        website: "www.techsolutions.com",
+        bio: "Tech Solutions Inc. is a trusted SDEAS partner company committed to providing opportunities for graduates."
+    },
+    { 
+        id: 302, 
+        name: "Digital Innovations", 
+        location: "Quezon City, Philippines", 
+        jobsPosted: 2, 
+        status: "Active",
+        industry: "Cloud Infrastructure",
+        website: "www.digitalinnovations.ph",
+        bio: "Digital Innovations is a leading tech agency specializing in enterprise-grade software and cloud solutions."
+    },
+    { 
+        id: 303, 
+        name: "Creative Studios", 
+        location: "Makati, Philippines", 
+        jobsPosted: 0, 
+        status: "Pending", 
+        industry: "Design & UX", 
+        website: "", 
+        bio: "" 
+    }
 ];
 
 // Profile data for the currently logged in user
@@ -74,6 +101,5 @@ let userProfileData = {
     email: "graduate@test.com",
     phone: "+1234567890",
     location: "Manila, Philippines",
-    skills: "JavaScript, React, Node.js",
-    biodata: "SDEAS graduate passionate about web development"
+    headline: "Mobile Software Engineer specializing in .NET MAUI & C#"
 };

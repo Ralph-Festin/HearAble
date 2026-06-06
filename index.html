@@ -24,12 +24,20 @@
             <button class="nav-link" data-target="jobs-view">
                 <span class="icon">💼</span> Job Postings
             </button>
+
+            <button class="nav-link user-only" data-target="companies-view">
+                <span class="icon">🏢</span> Companies
+            </button>
+    
+            <button class="nav-link company-only" data-target="graduates-view">
+                <span class="icon">📃</span> Applicants
+            </button>
             
             <button class="nav-link admin-only" data-target="graduates-view">
-                <span class="icon">🎓</span> Graduates
+                <span class="icon">🎓</span> Manage Graduates
             </button>
             <button class="nav-link admin-only" data-target="companies-view">
-                <span class="icon">🏢</span> Companies
+                <span class="icon">🏢</span> Manage Companies
             </button>
 
             <button class="nav-link" data-target="notifications-view" style="margin-left: 8px;">
@@ -67,6 +75,7 @@
         <div id="graduates-view" class="view-section"></div>
         <div id="companies-view" class="view-section"></div>
         <div id="job-details-view" class="view-section"></div>
+        <div id="company-details-view" class="view-section"></div>
         
         <div id="profile-view" class="view-section"></div>
         <div id="switch-account-view" class="view-section"></div>
@@ -76,8 +85,13 @@
 
     <script src="utils.js"></script>
     <script src="data.js"></script>
+
     <script src="views.js"></script> 
-    <script src="rendering.js"></script>
+    
+    <script src="renderJobs.js"></script>
+    <script src="renderCompanies.js"></script>
+    <script src="renderUsers.js"></script>
+
     <script src="navigation.js"></script>
     <script src="modals.js"></script>
     <script src="user.js"></script>

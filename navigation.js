@@ -7,11 +7,13 @@ mountViews();
 
 document.addEventListener('DOMContentLoaded', () => {
     updateDashboardsForCurrentRole();
-    renderGraduates(graduatesData);
-    renderCompanies(companiesData);
+    
+    // Initial renders (safe to call here, they get populated correctly by role later)
+    if (typeof renderGraduates === 'function') renderGraduates(graduatesData);
+    if (typeof renderCompanies === 'function') renderCompanies(companiesData);
     
     setupNavigation();
-    setupViewAllButton(); 
+    setupViewAllButtons(); 
     setupBackButton();
     setupRoleSwitcher(); 
     setupSearchAndFilters();
@@ -57,7 +59,7 @@ function switchToView(viewId) {
 }
 
 /* ==========================================================================
-   Existing Setup Functions
+   Setup Functions
    ========================================================================== */
 function mountViews() {
     const homeView = document.getElementById('home-view');
@@ -68,6 +70,7 @@ function mountViews() {
     const profileView = document.getElementById('profile-view');
     const switchAccountView = document.getElementById('switch-account-view');
     const notifView = document.getElementById('notifications-view');
+    const companyDetailsView = document.getElementById('company-details-view');
 
     if(homeView) homeView.innerHTML = ViewTemplates.home;
     if(jobsView) jobsView.innerHTML = ViewTemplates.jobs;
@@ -77,31 +80,64 @@ function mountViews() {
     if(profileView) profileView.innerHTML = ViewTemplates.profile;
     if(switchAccountView) switchAccountView.innerHTML = ViewTemplates.switchAccount;
     if(notifView) notifView.innerHTML = ViewTemplates.notifications;
+    if(companyDetailsView) companyDetailsView.innerHTML = ViewTemplates.companyDetails;
 }
 
 function updateDashboardsForCurrentRole() {
-    const currentRole = document.querySelector('.role-btn.active').getAttribute('data-role');
+    // Check which role button is currently active
+    const roleBtn = document.querySelector('.role-btn.active');
+    if (!roleBtn) return;
     
+    const currentRole = roleBtn.getAttribute('data-role');
+    
+    // 1. Update Home Profile Widget
     if (typeof renderHomeProfile === 'function') {
         renderHomeProfile(currentRole);
     }
 
+    // 2. Update Jobs View (Companies only see their own jobs)
     const displayJobs = currentRole === 'company' 
         ? jobsData.filter(job => job.company === CURRENT_LOGGED_IN_COMPANY) 
         : jobsData;
-    
-    renderJobs(displayJobs);
+    if (typeof renderJobs === 'function') renderJobs(displayJobs);
 
+    // 3. Update Home Recent Jobs Widget
     const recentJobs = currentRole === 'company'
         ? displayJobs 
         : jobsData.slice(0, 2); 
-    
-    renderRecentJobs(recentJobs, currentRole);
+    if (typeof renderRecentJobs === 'function') renderRecentJobs(recentJobs, currentRole);
 
+    // 4. Update Home Applications Widget (Companies only see their applicants)
     const displayApps = currentRole === 'company'
         ? applicationsData.filter(app => app.company === CURRENT_LOGGED_IN_COMPANY)
         : []; 
-    renderApplications(displayApps, currentRole);
+    if (typeof renderApplications === 'function') renderApplications(displayApps, currentRole);
+
+    // 5. Update the shared "Graduates/Applicants" page dynamically
+    const gradsTitle = document.querySelector('#graduates-view h3');
+    const gradsSubtext = document.querySelector('#graduates-view .subtext');
+    
+    if (currentRole === 'company') {
+        // Morph the page into the Company Applicants view
+        if (gradsTitle) gradsTitle.textContent = "Job Applicants";
+        if (gradsSubtext) gradsSubtext.textContent = "Review candidates who applied to your postings";
+        if (typeof renderCompanyApplicantsPage === 'function') {
+            renderCompanyApplicantsPage(displayApps);
+        }
+    } else if (currentRole === 'admin') {
+        // Morph the page into the Admin Manage Users view
+        if (gradsTitle) gradsTitle.textContent = "Registered Graduates";
+        if (gradsSubtext) gradsSubtext.textContent = "Overview of all student and alumni accounts";
+        if (typeof renderGraduates === 'function') {
+            renderGraduates(graduatesData);
+        }
+    }
+
+    // 6. Update the Companies View with role context
+    // This passes the currentRole so we know whether to show the "Manage" or "View Profile" buttons
+    if (typeof renderCompanies === 'function') {
+        renderCompanies(companiesData, currentRole);
+    }
 }
 
 function setupNavigation() {
@@ -109,16 +145,23 @@ function setupNavigation() {
     navLinks.forEach(link => {
         link.addEventListener('click', () => {
             const targetId = link.getAttribute('data-target');
-            switchToView(targetId);
+            if (targetId) switchToView(targetId);
         });
     });
 }
 
-function setupViewAllButton() {
-    const viewAllBtn = document.getElementById('view-all-jobs-btn');
-    if (viewAllBtn) {
-        viewAllBtn.addEventListener('click', () => {
-            switchToView('jobs-view');
+function setupViewAllButtons() {
+    const viewAllJobsBtn = document.getElementById('view-all-jobs-btn');
+    if (viewAllJobsBtn) {
+        viewAllJobsBtn.addEventListener('click', () => switchToView('jobs-view'));
+    }
+    
+    // Wire up the "View All Applications" button on the Company home dashboard
+    const viewAllAppsBtn = document.getElementById('view-all-apps-btn');
+    if (viewAllAppsBtn) {
+        viewAllAppsBtn.addEventListener('click', () => {
+            const currentRole = document.querySelector('.role-btn.active').getAttribute('data-role');
+            if (currentRole === 'company') switchToView('graduates-view'); // Takes them to their applicants page
         });
     }
 }
@@ -126,50 +169,70 @@ function setupViewAllButton() {
 function setupBackButton() {
     const backBtn = document.getElementById('back-to-jobs');
     if (backBtn) {
-        backBtn.addEventListener('click', () => {
-            switchToView('jobs-view');
-        });
+        backBtn.addEventListener('click', () => switchToView('jobs-view'));
     }
 }
 
-function navigateToDetails() {
-    switchToView('job-details-view');
-}
-
 function setupRoleSwitcher() {
+    // 1. Grab our buttons and content areas
     const roleButtons = document.querySelectorAll('.role-btn');
     const roleContents = document.querySelectorAll('.role-content');
+    
+    // Grab the action buttons we need to hide/show
     const addJobBtn = document.getElementById('add-job-btn'); 
+    const addCompanyBtn = document.getElementById('add-company-btn'); 
+    
+    // Grab all our role-specific navigation links
     const adminNavLinks = document.querySelectorAll('.nav-link.admin-only');
+    const userNavLinks = document.querySelectorAll('.nav-link.user-only');
+    const companyNavLinks = document.querySelectorAll('.nav-link.company-only');
 
+    // Default safety: hide the add job button on load
     if (addJobBtn) addJobBtn.style.display = 'none';
 
+    // 2. Attach click listeners to the Switch Account buttons
     roleButtons.forEach(btn => {
         btn.addEventListener('click', (e) => {
+            // Remove active classes from all buttons and content panels
             roleButtons.forEach(b => b.classList.remove('active'));
             roleContents.forEach(c => c.classList.remove('active'));
+            
+            // Add active class to the clicked button
             btn.classList.add('active');
 
             const targetRole = btn.getAttribute('data-role');
-            document.getElementById(`role-content-${targetRole}`).classList.add('active');
+            
+            // Show corresponding profile settings content (in the Switch Account view)
+            const targetContent = document.getElementById(`role-content-${targetRole}`);
+            if (targetContent) targetContent.classList.add('active');
 
+            // --- PERMISSION TOGGLES ---
+            
+            // 1. Toggle Action Buttons
             if (addJobBtn) {
                 addJobBtn.style.display = targetRole === 'company' ? 'block' : 'none';
             }
+            if (addCompanyBtn) {
+                addCompanyBtn.style.display = targetRole === 'admin' ? 'block' : 'none';
+            }
             
-            adminNavLinks.forEach(link => {
-                link.style.display = targetRole === 'admin' ? 'flex' : 'none';
-            });
+            // 2. Toggle Navigation Links
+            adminNavLinks.forEach(link => { link.style.display = targetRole === 'admin' ? 'flex' : 'none'; });
+            userNavLinks.forEach(link => { link.style.display = targetRole === 'user' ? 'flex' : 'none'; });
+            companyNavLinks.forEach(link => { link.style.display = targetRole === 'company' ? 'flex' : 'none'; });
             
+            // 3. Force the application to redraw data based on the new role
             updateDashboardsForCurrentRole();
 
-            // e.isTrusted prevents the app from auto-navigating home on page refresh
+            // e.isTrusted checks if a real human clicked the button. 
+            // This prevents the app from auto-navigating to the home page if we trigger a silent click on page refresh
             if (e.isTrusted) {
                 switchToView('home-view');
             }
         });
     });
 
+    // Trigger a fake click on the default active role so the app sets itself up correctly when you first load the website
     const defaultRoleBtn = document.querySelector('.role-btn.active');
     if (defaultRoleBtn) {
         defaultRoleBtn.click();
@@ -177,6 +240,7 @@ function setupRoleSwitcher() {
 }
 
 function setupSearchAndFilters() {
+    // 1. Search Logic for Jobs Page
     const jobSearchInput = document.querySelector('#jobs-view .search-input');
     if (jobSearchInput) {
         jobSearchInput.addEventListener('input', (e) => {
@@ -193,23 +257,38 @@ function setupSearchAndFilters() {
                 job.description.toLowerCase().includes(searchTerm)
             );
 
-            renderJobs(filteredJobs);
+            if (typeof renderJobs === 'function') renderJobs(filteredJobs);
         });
     }
 
+    // 2. Search Logic for Graduates/Applicants Page
     const gradSearchInput = document.querySelector('#graduates-view .search-input');
     if (gradSearchInput) {
         gradSearchInput.addEventListener('input', (e) => {
             const searchTerm = e.target.value.toLowerCase();
-            const filteredGrads = graduatesData.filter(user => 
-                user.name.toLowerCase().includes(searchTerm) || 
-                user.course.toLowerCase().includes(searchTerm) || 
-                user.batch.toLowerCase().includes(searchTerm)
-            );
-            renderGraduates(filteredGrads);
+            const currentRole = document.querySelector('.role-btn.active').getAttribute('data-role');
+            
+            if (currentRole === 'company') {
+                // Companies search through their applicants
+                const companyApps = applicationsData.filter(app => app.company === CURRENT_LOGGED_IN_COMPANY);
+                const filteredApps = companyApps.filter(app => 
+                    app.applicantName.toLowerCase().includes(searchTerm) || 
+                    app.jobTitle.toLowerCase().includes(searchTerm)
+                );
+                if (typeof renderCompanyApplicantsPage === 'function') renderCompanyApplicantsPage(filteredApps);
+            } else {
+                // Admins search through the global database of graduates
+                const filteredGrads = graduatesData.filter(user => 
+                    user.name.toLowerCase().includes(searchTerm) || 
+                    user.course.toLowerCase().includes(searchTerm) || 
+                    user.batch.toLowerCase().includes(searchTerm)
+                );
+                if (typeof renderGraduates === 'function') renderGraduates(filteredGrads);
+            }
         });
     }
 
+    // 3. Search Logic for Companies Page
     const companySearchInput = document.querySelector('#company-search');
     if (companySearchInput) {
         companySearchInput.addEventListener('input', (e) => {
@@ -218,7 +297,7 @@ function setupSearchAndFilters() {
                 company.name.toLowerCase().includes(searchTerm) || 
                 company.location.toLowerCase().includes(searchTerm)
             );
-            renderCompanies(filteredCompanies);
+            if (typeof renderCompanies === 'function') renderCompanies(filteredCompanies);
         });
     }
 }
@@ -229,23 +308,26 @@ function setupProfileDropdown() {
 
     if (!trigger || !menu) return;
 
+    // Toggle dropdown when clicking the avatar
     trigger.addEventListener('click', (e) => {
         e.stopPropagation(); 
         menu.classList.toggle('active');
     });
 
+    // Close the dropdown if the user clicks anywhere else on the screen
     document.addEventListener('click', (e) => {
         if (!menu.contains(e.target)) {
             menu.classList.remove('active');
         }
     });
 
+    // Handle clicks on individual dropdown items
     const items = menu.querySelectorAll('.dropdown-item');
     items.forEach(item => {
         item.addEventListener('click', (e) => {
             const action = e.currentTarget.getAttribute('data-action');
             
-            // Uses the URL router to open the correct pages
+            // Route to correct views based on the action
             if (action === 'view-profile') {
                 switchToView('profile-view');
             } else if (action === 'switch-account') {

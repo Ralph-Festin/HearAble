@@ -4,12 +4,7 @@
 
 const ViewTemplates = {
     home: `
-        <header class="hero">
-            <h1>Welcome Back!</h1>
-            <p>Discover new opportunities and track your applications</p>
-        </header>
-
-        <div class="dashboard-grid">
+        <div class="dashboard-grid" style="margin-top: 24px;">
             <aside class="dashboard-sidebar">
                 <div id="home-profile-container"></div>
             </aside>
@@ -44,31 +39,30 @@ const ViewTemplates = {
     `,
 
     jobs: `
-        <header class="hero">
-            <div class="flex-between-center">
-                <div>
-                    <h1>Job Postings</h1>
-                    <p>Explore opportunities from SDEAS partner companies</p>
+        <div id="jobs-split-layout" class="jobs-split-layout">
+            
+            <div class="jobs-list-column">
+                <div class="filter-panel">
+                    <div class="search-box-wrapper">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" placeholder="Search jobs or companies..." class="search-input">
+                    </div>
+                    <select class="filter-select">
+                        <option>All Locations</option>
+                    </select>
+                    <select class="filter-select">
+                        <option>All Types</option>
+                    </select>
                 </div>
-                <button id="add-job-btn" class="btn-black">+ Add New Job</button>
-            </div>
-        </header>
 
-        <div class="filter-panel">
-            <div class="search-box-wrapper">
-                <span class="search-icon">🔍</span>
-                <input type="text" placeholder="Search jobs or companies..." class="search-input">
+                <div class="results-counter" id="results-counter">Showing 0 jobs</div>
+                <div id="job-postings-container"></div>
             </div>
-            <select class="filter-select">
-                <option>All Locations</option>
-            </select>
-            <select class="filter-select">
-                <option>All Types</option>
-            </select>
+
+            <div id="job-details-column" class="job-details-column">
+                </div>
+
         </div>
-
-        <div class="results-counter" id="results-counter">Showing 0 jobs</div>
-        <div id="job-postings-container"></div>
 
         <div id="add-job-modal" class="modal">
             <div class="modal-content card">
@@ -93,10 +87,6 @@ const ViewTemplates = {
     `,
 
     graduates: `
-        <header class="hero">
-            <h1>Graduates Directory</h1>
-            <p>Manage and monitor SDEAS alumni</p>
-        </header>
         <section class="card">
             <div class="card-header-flex">
                 <div>
@@ -113,10 +103,6 @@ const ViewTemplates = {
     `,
 
     companies: `
-        <header class="hero">
-            <h1>Partner Companies</h1>
-            <p>Manage the SDEAS partner network</p>
-        </header>
         <section class="card">
             <div class="card-header-flex">
                 <div>
@@ -128,52 +114,94 @@ const ViewTemplates = {
                         <span class="search-icon">🔍</span>
                         <input type="text" id="company-search" placeholder="Search companies..." class="search-input">
                     </div>
-                    <button class="btn-black">+ Add Company</button>
+                    <button class="btn-black" id="add-company-btn">+ Add Company</button>
                 </div>
             </div>
             <div id="companies-container"></div>
         </section>
     `,
 
-    jobDetails: `
-        <button class="back-btn" id="back-to-jobs">← Back to Jobs</button>
-        <div class="card" id="job-details-content"></div>
+    companyDetails: `
+        <button class="back-btn" onclick="window.history.back()">← Back</button>
+        <div id="company-details-content"></div>
     `,
 
-    // NEW: Just the profile section
+    jobDetails: `
+        <button class="back-btn" id="back-to-jobs">← Back to Jobs</button>
+        <!-- Removed the 'card' class here so we can inject multiple cards -->
+        <div id="job-details-content"></div>
+    `,
     profile: `
-        <header class="hero">
-            <h1>My Profile</h1>
-            <p>Manage your account details and view your specific settings</p>
-        </header>
-
-        <div id="role-content-user" class="role-content active">
-            <div class="card-header-flex mb-20">
-                <div>
-                    <h2 class="details-title">Applicant Profile</h2>
-                    <p class="subtext">Manage your personal information</p>
-                </div>
+        <div id="role-content-user" class="role-content active" style="margin-top: 24px;">
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
                 <button class="btn-black" id="edit-profile-btn">
                     <span class="icon">📝</span> Edit Profile
                 </button>
             </div>
-            <div class="card">
-                <div class="mb-16">
-                    <h3>Personal Information</h3>
-                    <p class="subtext">Your profile information</p>
+            
+            <div id="profile-content-display"></div>
+
+            <div id="contact-info-modal" class="modal">
+                <div class="modal-content card" style="max-width: 400px; gap: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                        <h3 style="margin: 0;">Contact Information</h3>
+                        <button id="close-contact-modal" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--secondary-text);">✕</button>
+                    </div>
+                    <div class="profile-field">
+                        <label>Email Address</label>
+                        <p style="font-weight: 500; color: var(--text-color);" id="modal-email-display"></p>
+                    </div>
+                    <div class="profile-field">
+                        <label>Phone Number</label>
+                        <p style="font-weight: 500; color: var(--text-color);" id="modal-phone-display"></p>
+                    </div>
                 </div>
-                <div id="profile-content-display"></div>
             </div>
         </div>
 
-        <div id="role-content-company" class="role-content">
+        <div id="role-content-company" class="role-content" style="margin-top: 24px;">
             <div class="card">
-                <h3>Company Profile</h3>
-                <p class="subtext mb-16">Manage your SDEAS partnership details.</p>
-                <div class="flex-col-gap">
-                    <input type="text" class="search-input" value="Tech Solutions Inc." readonly>
-                    <textarea class="search-input" rows="3" readonly>A trusted SDEAS partner company committed to providing opportunities for graduates.</textarea>
-                    <button class="btn-black w-fit">Edit Company Info</button>
+                <!-- Edit Button Header -->
+                <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
+                    <button class="btn-black" id="edit-company-profile-btn">
+                        <span class="icon">📝</span> Edit Profile
+                    </button>
+                </div>
+                
+                <!-- Company Profile Display -->
+                <div id="company-profile-content-display">
+                    <!-- Hero Section -->
+                    <div style="text-align: center; padding-bottom: 16px;">
+                        <div class="avatar-lg" style="width: 120px; height: 120px; font-size: 3rem; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #0f172a;">
+                            🏢
+                        </div>
+                        <h2 style="font-size: 2rem; margin-bottom: 8px;">Tech Solutions Inc.</h2>
+                        <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 8px;">Software Development</p>
+                        <p style="color: #94a3b8; font-weight: 500;">📍 Manila, Philippines</p>
+                    </div>
+                    
+                    <!-- Mini Navbar / Tab Switcher -->
+                    <div style="display: flex; justify-content: center; gap: 8px; border-bottom: 1px solid var(--border-color); margin-bottom: 24px; padding-bottom: 16px;">
+                        <button class="nav-link active" style="padding: 8px 24px;">Home</button>
+                        <button class="nav-link" style="padding: 8px 24px;">About</button>
+                        <button class="nav-link" style="padding: 8px 24px;">Posts</button>
+                    </div>
+                    
+                    <!-- Tab Content (Defaults to Home/About Grid) -->
+                    <div class="profile-grid">
+                        <div class="profile-field">
+                            <label>Website</label>
+                            <p style="font-weight: 500;">www.techsolutions.com</p>
+                        </div>
+                        <div class="profile-field">
+                            <label>Active Postings</label>
+                            <p style="font-weight: 500;">5 Roles</p>
+                        </div>
+                        <div class="profile-field profile-field-full">
+                            <label>About the Company</label>
+                            <p style="font-weight: 500;">Tech Solutions Inc. is a trusted SDEAS partner company committed to providing opportunities for graduates.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -197,13 +225,7 @@ const ViewTemplates = {
         </div>
     `,
 
-    // NEW: Just the Account Switcher section
     switchAccount: `
-        <header class="hero">
-            <h1>Change Account</h1>
-            <p>Switch roles to preview different dashboard features</p>
-        </header>
-
         <div class="card role-switcher-card">
             <div class="section-header mb-16">
                 <div>
@@ -220,16 +242,6 @@ const ViewTemplates = {
     `,
 
     notifications: `
-        <header class="hero">
-            <div class="flex-between-center">
-                <div>
-                    <h1>Notifications</h1>
-                    <p>Important updates regarding your applications and account</p>
-                </div>
-                <button class="btn-outline">Mark All as Read</button>
-            </div>
-        </header>
-
         <section class="card">
             <div>
                 <div class="list-item">
