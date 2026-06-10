@@ -308,8 +308,19 @@
 .highlight-pill { background-color: var(--surface-color); border-style: dashed; }
 
 /* --- Search & Filters --- */
-.filter-panel { display: flex; gap: 12px; margin-bottom: 24px; }
-.search-box-wrapper { flex: 1; position: relative; display: flex; align-items: center; }
+.filter-panel { 
+    display: flex; 
+    flex-wrap: wrap; /* Allows items to wrap to a second line */
+    gap: 12px; 
+    margin-bottom: 24px; 
+}
+
+.search-box-wrapper { 
+    flex: 1 1 100%; /* Forces the search bar to be 100% wide and sit on its own row */
+    position: relative; 
+    display: flex; 
+    align-items: center; 
+}
 .search-icon { 
     position: absolute; 
     left: 16px; 

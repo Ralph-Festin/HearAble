@@ -3,7 +3,7 @@
    ========================================================================== */
 
 const ViewTemplates = {
-    home: `
+home: `
         <div class="dashboard-grid" style="margin-top: 24px;">
             <aside class="dashboard-sidebar">
                 <div id="home-profile-container"></div>
@@ -11,24 +11,22 @@ const ViewTemplates = {
 
             <div class="dashboard-main">
                 <section class="card">
-                    <div class="card-header-flex">
-                        <div>
-                            <h3 id="home-jobs-title">Recent Job Postings</h3>
-                            <p class="subtext" id="home-jobs-subtitle">Latest opportunities from partner companies</p>
-                        </div>
-                        <button class="btn-black" id="view-all-jobs-btn">View All</button>
+                    <div class="card-header-flex" style="margin-bottom: 16px;">
+                        <h3 id="home-jobs-title" style="margin: 0;">Recent Job Postings</h3>
                     </div>
+                    
                     <div id="recent-jobs-container"></div>
+                    
+                    <div style="margin-top: 16px; border-top: 1px solid var(--border-color); padding-top: 16px;">
+                        <button class="btn-outline w-full" id="view-all-jobs-btn">View All Jobs</button>
+                    </div>
                 </section>
 
                 <section class="card">
                     <div class="card-header-flex mb-20">
                         <div class="flex-start-gap">
                             <span id="app-section-icon" class="icon-blue">👤</span>
-                            <div>
-                                <h3 id="app-section-title">My Applications</h3>
-                                <p class="subtext" id="app-section-subtitle">Track your job application status</p>
-                            </div>
+                            <h3 id="app-section-title" style="margin: 0;">My Applications</h3>
                         </div>
                         <button class="btn-outline btn-sm" id="view-all-apps-btn">View All →</button>
                     </div>
@@ -39,8 +37,12 @@ const ViewTemplates = {
     `,
 
     jobs: `
+        <!-- Removed Job Board text, kept the button aligned to the right -->
+        <div style="display: flex; justify-content: flex-end;">
+            <button class="btn-black" id="add-job-btn" style="display: none; margin-bottom: 24px;">+ Post a Job</button>
+        </div>
+
         <div id="jobs-split-layout" class="jobs-split-layout">
-            
             <div class="jobs-list-column">
                 <div class="filter-panel">
                     <div class="search-box-wrapper">
@@ -59,9 +61,7 @@ const ViewTemplates = {
                 <div id="job-postings-container"></div>
             </div>
 
-            <div id="job-details-column" class="job-details-column">
-                </div>
-
+            <div id="job-details-column" class="job-details-column"></div>
         </div>
 
         <div id="add-job-modal" class="modal">
@@ -88,12 +88,9 @@ const ViewTemplates = {
 
     graduates: `
         <section class="card">
-            <div class="card-header-flex">
-                <div>
-                    <h3>Registered Graduates</h3>
-                    <p class="subtext">Overview of all student and alumni accounts</p>
-                </div>
-                <div class="search-box-wrapper max-w-sm">
+            <!-- Removed text, allowed search bar to stretch natively -->
+            <div class="card-header-flex" style="justify-content: flex-end; margin-bottom: 24px;">
+                <div class="search-box-wrapper" style="width: 100%;">
                     <span class="search-icon">🔍</span>
                     <input type="text" placeholder="Search by name or batch..." class="search-input">
                 </div>
@@ -104,13 +101,10 @@ const ViewTemplates = {
 
     companies: `
         <section class="card">
-            <div class="card-header-flex">
-                <div>
-                    <h3>Approved Partners</h3>
-                    <p class="subtext">Overview of companies hiring from SDEAS</p>
-                </div>
-                <div class="header-actions">
-                    <div class="search-box-wrapper max-w-sm">
+            <!-- Removed text, allowed search bar to stretch natively -->
+            <div class="card-header-flex" style="justify-content: flex-end; margin-bottom: 24px;">
+                <div class="header-actions" style="width: 100%; display: flex; gap: 12px; align-items: center;">
+                    <div class="search-box-wrapper" style="flex: 1;">
                         <span class="search-icon">🔍</span>
                         <input type="text" id="company-search" placeholder="Search companies..." class="search-input">
                     </div>

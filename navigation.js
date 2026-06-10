@@ -37,7 +37,7 @@ function handleRouting() {
     // If there is no hash (they just typed index.html), default to the home page
     if (!hash) {
         window.location.hash = 'home-view';
-        return; // Changing the hash will trigger this function again automatically
+        return; 
     }
 
     // 1. Hide all views and remove highlights from all navbar links
@@ -48,9 +48,13 @@ function handleRouting() {
     const targetView = document.getElementById(hash);
     if (targetView) targetView.classList.add('active');
 
-    // 3. Find the navbar button that matches the URL hash and highlight it
-    const targetLink = document.querySelector(`.nav-link[data-target="${hash}"]`);
-    if (targetLink) targetLink.classList.add('active');
+    // 3. FIXED: Use querySelectorAll to find ALL buttons that point to this view.
+    // This ensures that role-specific buttons (like Manage Graduates vs Applicants) 
+    // all get highlighted properly when their shared page is active!
+    const targetLinks = document.querySelectorAll(`.nav-link[data-target="${hash}"]`);
+    targetLinks.forEach(link => {
+        link.classList.add('active');
+    });
 }
 
 /* HELPER: Now, changing a view is as simple as updating the URL! */
@@ -117,17 +121,12 @@ function updateDashboardsForCurrentRole() {
     const gradsTitle = document.querySelector('#graduates-view h3');
     const gradsSubtext = document.querySelector('#graduates-view .subtext');
     
+    // 5. Update the shared "Graduates/Applicants" page dynamically
     if (currentRole === 'company') {
-        // Morph the page into the Company Applicants view
-        if (gradsTitle) gradsTitle.textContent = "Job Applicants";
-        if (gradsSubtext) gradsSubtext.textContent = "Review candidates who applied to your postings";
         if (typeof renderCompanyApplicantsPage === 'function') {
             renderCompanyApplicantsPage(displayApps);
         }
     } else if (currentRole === 'admin') {
-        // Morph the page into the Admin Manage Users view
-        if (gradsTitle) gradsTitle.textContent = "Registered Graduates";
-        if (gradsSubtext) gradsSubtext.textContent = "Overview of all student and alumni accounts";
         if (typeof renderGraduates === 'function') {
             renderGraduates(graduatesData);
         }

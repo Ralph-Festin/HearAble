@@ -22,7 +22,8 @@ function renderGraduates(gradsArray) {
             </div>
             <div class="item-actions">
                 <span class="status-badge ${user.status}">${user.status}</span>
-                <button class="btn-outline mt-8">View Profile</button>
+                <!-- Added identifying class and ID data attribute -->
+                <button class="btn-outline mt-8 view-student-profile-btn" data-gradid="${user.id}">View Profile</button>
             </div>
         `;
         container.appendChild(userCard);
@@ -32,16 +33,15 @@ function renderGraduates(gradsArray) {
 function renderApplications(appsArray, roleContext) {
     const container = document.getElementById('applications-container');
     const title = document.getElementById('app-section-title');
-    const subtitle = document.getElementById('app-section-subtitle');
     const icon = document.getElementById('app-section-icon');
     const viewAllBtn = document.getElementById('view-all-apps-btn');
     
+    // Completely removed all subtitle logic here
     if (!container) return;
     container.innerHTML = '';
 
     if (roleContext === 'company') {
         if(title) title.textContent = "Recent Applications";
-        if(subtitle) subtitle.textContent = "Latest candidates who applied to your positions";
         if(icon) icon.style.display = 'block';
         if(viewAllBtn) viewAllBtn.style.display = 'block';
 
@@ -66,7 +66,6 @@ function renderApplications(appsArray, roleContext) {
         });
     } else {
         if(title) title.textContent = "My Applications";
-        if(subtitle) subtitle.textContent = "Track your job application status";
         if(icon) icon.style.display = 'none';
         if(viewAllBtn) viewAllBtn.style.display = 'none';
 
@@ -273,5 +272,67 @@ document.addEventListener('click', function(e) {
     if (e.target && e.target.classList.contains('review-app-btn')) {
         const appId = e.target.getAttribute('data-appid');
         openApplicantModal(appId);
+    }
+});
+
+/* ==========================================================================
+   Full Page Student Profile Logic
+   ========================================================================== */
+
+function renderStudentFullProfile(gradId) {
+    // 1. Find the specific student in our database
+    const grad = graduatesData.find(g => g.id === parseInt(gradId));
+    if (!grad) return;
+
+    // 2. We reuse the full-page details container because it already has a "Back" button built in!
+    const container = document.getElementById('company-details-content'); 
+    if (!container) return;
+
+    // 3. Inject the clean profile design
+    container.innerHTML = `
+        <div class="card" style="text-align: center; padding-bottom: 32px; margin-bottom: 32px;">
+            <div class="avatar-lg" style="width: 120px; height: 120px; font-size: 3rem; margin: 0 auto 16px auto; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+                ${grad.initials}
+            </div>
+            <h2 style="font-size: 2.25rem; margin-bottom: 8px;">${grad.name}</h2>
+            <p style="font-size: 1.15rem; color: var(--secondary-text); margin-bottom: 12px;">🎓 ${grad.course}</p>
+            <div style="display: flex; justify-content: center; gap: 8px;">
+                <span class="status-badge ${grad.status}">${grad.status}</span>
+                <span class="tag">${grad.batch}</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-header" style="margin-bottom: 16px;">
+                <h3 style="margin: 0;">Student Information</h3>
+            </div>
+            <div class="profile-grid">
+                <div class="profile-field">
+                    <label>Full Name</label>
+                    <p style="font-weight: 500; font-size: 1.05rem; color: var(--text-color);">${grad.name}</p>
+                </div>
+                <div class="profile-field">
+                    <label>System ID</label>
+                    <p style="font-weight: 500; font-size: 1.05rem; color: var(--text-color);">#${grad.id}</p>
+                </div>
+                <div class="profile-field profile-field-full">
+                    <label>Academic Program</label>
+                    <p style="font-weight: 500; font-size: 1.05rem; color: var(--text-color);">${grad.course}</p>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // 4. Trigger the custom router to switch the screen
+    if (typeof switchToView === 'function') {
+        switchToView('company-details-view');
+    }
+}
+
+// Global click listener to catch whenever "View Profile" is clicked for a student
+document.addEventListener('click', function(e) {
+    if (e.target && e.target.classList.contains('view-student-profile-btn')) {
+        const gradId = e.target.getAttribute('data-gradid');
+        renderStudentFullProfile(gradId);
     }
 });

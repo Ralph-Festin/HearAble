@@ -45,37 +45,43 @@ function renderJobs(jobsArray) {
 function renderRecentJobs(jobsArray, roleContext) {
     const container = document.getElementById('recent-jobs-container');
     const title = document.getElementById('home-jobs-title');
-    const subtitle = document.getElementById('home-jobs-subtitle');
     
     if (!container) return;
     container.innerHTML = '';
 
     if (roleContext === 'company') {
         if(title) title.textContent = "Your Job Postings";
-        if(subtitle) subtitle.textContent = "Manage the opportunities you've posted";
     } else {
         if(title) title.textContent = "Recent Job Postings";
-        if(subtitle) subtitle.textContent = "Latest opportunities from partner companies";
     }
 
+    // Tighter spacing between the cards
+    container.style.display = 'flex';
+    container.style.flexDirection = 'column';
+    container.style.gap = '12px'; 
+
     jobsArray.forEach(job => {
-        const shortDesc = truncateText(job.description, 120);
-        const listItem = document.createElement('div');
-        listItem.className = 'list-item';
+        const jobCard = document.createElement('div');
+        jobCard.className = 'job-board-item'; // Keeps the card border and shadow
+        jobCard.style.padding = '16px';       // Slimmer padding
         
-        listItem.innerHTML = `
-            <div class="item-content">
-                <h4>${job.title}</h4>
-                <p class="company-info">🏢 ${job.company} 📍 ${job.location}</p>
-                <p class="description">${shortDesc}</p>
-                <span class="timestamp">🕒 Posted on ${job.date}</span>
+        // Compact HTML: Removed descriptions and skills, shrunk the button
+        jobCard.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <h4 style="margin: 0; font-size: 1.05rem;">${job.title}</h4>
+                <span class="tag" style="font-size: 0.75rem; padding: 2px 8px;">${job.type}</span>
             </div>
-            <div class="item-actions">
-                <span class="tag">${job.type}</span>
-                <button class="btn-outline view-details-btn" data-id="${job.id}">View Details</button>
+            
+            <p style="font-size: 0.9rem; color: var(--secondary-text); margin-bottom: 12px;">
+                🏢 ${job.company} • 📍 ${job.location}
+            </p>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 0.85rem; color: var(--secondary-text);">🕒 ${job.date}</span>
+                <button class="btn-outline btn-sm view-details-btn" data-id="${job.id}" style="padding: 4px 16px;">View</button>
             </div>
         `;
-        container.appendChild(listItem);
+        container.appendChild(jobCard);
     });
     
     attachDetailsListeners();

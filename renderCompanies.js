@@ -14,16 +14,22 @@ function renderCompanies(companiesArray, roleContext = 'admin') {
         
         let actionButtonHTML = '';
         if (roleContext === 'user') {
-            actionButtonHTML = `<button class="btn-outline mt-8 view-company-full-btn" data-company="${company.name}">View Profile</button>`;
+            actionButtonHTML = `<button class="btn-outline mt-8 view-company-full-btn" data-company="${company.name}">View Company Page</button>`;
         } else if (roleContext === 'admin') {
-            actionButtonHTML = `<button class="btn-outline mt-8">Manage</button>`;
+            // Changed from "Manage" to "View Profile" and added the class so Admins can click it too!
+            actionButtonHTML = `<button class="btn-outline mt-8 view-company-full-btn" data-company="${company.name}">View Profile</button>`;
         }
 
         compCard.innerHTML = `
-            <div class="item-content">
-                <h4>${company.name}</h4>
-                <p class="company-info">📍 ${company.location}</p>
-                <p class="description mb-0">Active Job Postings: <strong>${company.jobsPosted}</strong></p>
+            <div class="applicant-info-wrapper" style="display: flex; gap: 16px; align-items: center;">
+                <div class="avatar-lg" style="background: #0f172a; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">
+                    🏢
+                </div>
+                <div class="item-content pr-0">
+                    <h4 style="margin-bottom: 4px;">${company.name}</h4>
+                    <p class="company-info" style="margin-bottom: 4px;">📍 ${company.location}</p>
+                    <p class="description mb-0">Active Job Postings: <strong>${company.jobsPosted}</strong></p>
+                </div>
             </div>
             <div class="item-actions">
                 <span class="status-badge ${company.status}">${company.status}</span>
